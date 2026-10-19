@@ -1,0 +1,5 @@
+venv/
+__pycache__/
+consults.csv
+flask.log
+.env
