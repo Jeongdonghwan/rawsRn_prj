@@ -67,6 +67,13 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 // ---------- 상담 신청 ----------
 const form = document.getElementById('cform');
+if (form) {
+  // 유입 정보: URL의 utm 파라미터 + 랜딩 URL + 리퍼러 (상담 허브 통계용)
+  const q = new URLSearchParams(location.search);
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term'].forEach(k => form.elements[k].value = q.get(k) || '');
+  form.elements.landing_url.value = location.href;
+  form.elements.referrer.value = document.referrer;
+}
 if (form) form.addEventListener('submit', async e => {
   e.preventDefault();
   const msg = form.querySelector('.msg'), btn = form.querySelector('button');
