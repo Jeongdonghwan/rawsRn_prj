@@ -90,3 +90,11 @@ if (form) form.addEventListener('submit', async e => {
     btn.disabled = false;
   }
 });
+
+// 시안 A/B/C 전환 (데모용 — 확정 후 제거)
+{
+  const cur = location.pathname.replace(/^\//, '') || 'index.html';
+  const sw = document.createElement('nav'); sw.className = 'abc';
+  sw.innerHTML = [['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html']].map(([k, h]) => `<a href="${h}" class="${h === cur ? 'on' : ''}">${k}안</a>`).join('');
+  document.body.appendChild(sw);
+}

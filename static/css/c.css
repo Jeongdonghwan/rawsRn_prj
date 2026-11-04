@@ -22,7 +22,7 @@ body.c { --paper: #f6f4f0; --line: #e4e2dd; }
 .c .hero img.bg { object-position: 50% 45%; }
 
 .c-sec { padding: 70px 0; }
-.c-sec .head, .c-rev .head, .c-gal .head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 26px; }
+.c-steps .head, .c-sec .head, .c-rev .head, .c-gal .head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 26px; }
 .c-sec .head h2, .c-rev .head h2, .c-gal .head h2 { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
 .c-sec .head p, .c-rev .head p { font-size: 15px; color: var(--gray); }
 .c-sec .head a.more, .c-rev .head a.more, .c-gal .head a.more { font-size: 14px; color: var(--ink2); border-bottom: 1px solid var(--ink2); padding-bottom: 1px; }
@@ -31,12 +31,6 @@ body.c { --paper: #f6f4f0; --line: #e4e2dd; }
 .c-sec .head .nav button:hover, .c-gal .head .nav button:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
 
 /* 원형 아이콘 줄 */
-.c-cats { padding: 50px 0 20px; }
-.c-cats ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 26px 10px; }
-.c-cats li a { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 112px; font-size: 14px; font-weight: 600; color: var(--ink2); }
-.c-cats li a span { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; border: 1px solid var(--line); background: var(--paper); transition: transform .3s var(--ease), box-shadow .3s; }
-.c-cats li a:hover span { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.14); }
-.c-cats li a img { width: 100%; height: 100%; object-fit: cover; }
 
 /* 가로 슬라이더 */
 .c-tabs { display: flex; gap: 18px; font-size: 14px; color: var(--gray); margin-bottom: 20px; }
@@ -139,9 +133,7 @@ body.c { --paper: #f6f4f0; --line: #e4e2dd; }
   .c .hero { margin-top: 0; height: 72svh; min-height: 480px; max-height: 640px; align-items: flex-start; padding-bottom: 0; }
   .c .hero .wrap { padding-top: 60px; }
   .c-sec { padding: 46px 0; }
-  .c-cats ul { gap: 18px 4px; }
-  .c-cats li a { width: 84px; font-size: 12px; }
-  .c-cats li a span { width: 64px; height: 64px; }
+  .c-steps ol { grid-template-columns: 1fr; }
   .c-rail .it { flex-basis: 46%; min-width: 0; }
   .c-bento { padding-bottom: 60px; }
   .c-bento .grid { grid-template-columns: 1fr; }
@@ -159,3 +151,13 @@ body.c { --paper: #f6f4f0; --line: #e4e2dd; }
   .c-gal .g .t b { font-size: 22px; }
   .c footer .cs { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* 상담 절차 3단계 */
+.c-steps { padding: 70px 0 10px; }
+.c-steps ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.c-steps .pic { position: relative; aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+.c-steps .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.c-steps li:hover .pic img { transform: scale(1.05); }
+.c-steps .pic i { position: absolute; left: 14px; top: 14px; font-style: normal; font-weight: 800; font-size: 13px; letter-spacing: .1em; color: var(--white); background: var(--navy); padding: 6px 10px; border-radius: 2px; }
+.c-steps h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.c-steps p { font-size: 14px; color: var(--ink2); line-height: 1.7; }
