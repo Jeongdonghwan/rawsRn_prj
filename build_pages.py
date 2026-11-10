@@ -65,7 +65,7 @@ def sec(src, key, tag="section"):
     m = re.search(rf'<{tag}[^>]*(?:id="{key}"|class="{key}[" ])[^>]*>.*?</{tag}>', src, re.S)
     assert m, key
     return m.group(0) + "\n\n"
-VIDEO = '<video class="bg" autoplay muted loop playsinline poster="img/hero-bg.webp"><source src="video/hero.mp4" type="video/mp4"></video>'
+VIDEO = '<video class="bg" autoplay muted loop playsinline poster="img/hero-bg.webp" data-day="video/hero-day.mp4" data-night="video/hero-night.mp4"></video>'
 vid = lambda h: h.replace('<img class="bg" src="img/hero-bg.webp" alt="">', VIDEO)
 S = {
     "heroA": vid(sec(A, "hero")), "stats": sec(A, "why"), "practice": sec(A, "practice"), "clients": sec(A, "clients"),

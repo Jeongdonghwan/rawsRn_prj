@@ -98,3 +98,12 @@ if (form) form.addEventListener('submit', async e => {
   sw.innerHTML = [['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html'], ['믹스A', 'mix-a.html'], ['믹스B', 'mix-b.html'], ['믹스C', 'mix-c.html']].map(([k, h]) => `<a href="${h}" class="${h === cur ? 'on' : ''}">${k}안</a>`).join('');
   document.body.appendChild(sw);
 }
+
+// 히어로 영상: 06~17시 낮, 18~05시 밤. ?t=day / ?t=night 로 강제 확인
+{
+  const v = document.querySelector('video.bg[data-night]');
+  if (v) {
+    const h = new Date().getHours(), q = new URLSearchParams(location.search).get('t');
+    v.src = (q === 'night' || (q !== 'day' && (h >= 18 || h < 6))) ? v.dataset.night : v.dataset.day;
+  }
+}
