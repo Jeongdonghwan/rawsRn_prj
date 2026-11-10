@@ -8,7 +8,7 @@ const ready = () => document.body.classList.add('ready');
 if (splash) { // ponytail: 매 진입마다 재생. 세션당 1회로 바꾸려면 sessionStorage 체크 추가
   splash.hidden = false;
   document.body.classList.add('lock');
-  splash.querySelector('.name').innerHTML = [...'법률사무소 알엠']
+  splash.querySelector('.name').innerHTML = [...'로펌 알엠 법률사무소']
     .map((c, i) => `<span style="animation-delay:${0.2 + i * 0.08}s">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
   let closed = false;
   const close = () => {
@@ -85,7 +85,7 @@ if (form) form.addEventListener('submit', async e => {
     form.reset();
     msg.textContent = '상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.';
   } catch (err) {
-    msg.textContent = err.message + ' — 전화(031-000-0000)로 문의해 주세요.';
+    msg.textContent = err.message + ' — 전화(1644-7702)로 문의해 주세요.';
   } finally {
     btn.disabled = false;
   }
@@ -95,6 +95,6 @@ if (form) form.addEventListener('submit', async e => {
 {
   const cur = location.pathname.replace(/^\//, '') || 'index.html';
   const sw = document.createElement('nav'); sw.className = 'abc';
-  sw.innerHTML = [['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html']].map(([k, h]) => `<a href="${h}" class="${h === cur ? 'on' : ''}">${k}안</a>`).join('');
+  sw.innerHTML = [['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html'], ['믹스A', 'mix-a.html'], ['믹스B', 'mix-b.html'], ['믹스C', 'mix-c.html']].map(([k, h]) => `<a href="${h}" class="${h === cur ? 'on' : ''}">${k}안</a>`).join('');
   document.body.appendChild(sw);
 }

@@ -161,3 +161,6 @@ body.c { --paper: #f6f4f0; --line: #e4e2dd; }
 .c-steps .pic i { position: absolute; left: 14px; top: 14px; font-style: normal; font-weight: 800; font-size: 13px; letter-spacing: .1em; color: var(--white); background: var(--navy); padding: 6px 10px; border-radius: 2px; }
 .c-steps h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
 .c-steps p { font-size: 14px; color: var(--ink2); line-height: 1.7; }
+
+.c .hero .cta { justify-content: center; }
+.c .hero p { margin-left: auto; margin-right: auto; }
