@@ -33,8 +33,10 @@ CLIENTS_HTML = '''  <!-- CLIENTS -->
   </section>
 
 '''
+VIDEO = '<video class="bg" autoplay muted loop playsinline poster="img/hero-bg.webp" data-day="video/hero-day.mp4" data-night="video/hero-night.mp4"></video>'
+vid = lambda h: h.replace('<img class="bg" src="img/hero-bg.webp" alt="">', VIDEO)
 for f in ["index.html", "b.html", "c.html", "cases.html", "news.html", "practice.html"]:
-    s = rd(f)
+    s = vid(rd(f))
     for a, b in REP:
         if b not in s or a in s: s = s.replace(a, b)
     if "<!-- CLIENTS -->" not in s:
