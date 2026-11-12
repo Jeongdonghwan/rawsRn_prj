@@ -45,7 +45,7 @@ for f in ["index.html", "b.html", "c.html", "cases.html", "news.html", "practice
     wr(f, s)
 js = rd("js/main.js")
 for a, b in REP[:4]: js = js.replace(a, b)
-js = re.sub(r"\[\['A', 'index\.html'\].*?\]\.map", "[['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html'], ['믹스A', 'mix-a.html'], ['믹스B', 'mix-b.html'], ['믹스C', 'mix-c.html']].map", js, flags=re.S)
+js = re.sub(r"\[\['A', 'index\.html'\].*?\]\.map", "[['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html'], ['믹스A', 'mix-a.html'], ['믹스B', 'mix-b.html'], ['믹스C', 'mix-c.html'], ['최종', 'final.html']].map", js, flags=re.S)
 wr("js/main.js", js)
 css = rd("css/style.css")
 css = css.replace(".hero img.bg {", ".hero .bg {")
