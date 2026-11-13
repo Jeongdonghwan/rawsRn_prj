@@ -59,17 +59,17 @@ greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
 hist = sec(B, "history")
 histin = re.search(r'<div class="wrap">\n(.*?)\n    </div>\n  </section>$', hist, re.S).group(1)
-histblk = ('      <div class="b-hist" id="history">\n' + histin
-           + '\n        <p style="margin-top:36px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n      </div>\n')
-greet2 = greet.replace(career, "").replace('      <div class="wide reveal">', histblk + '      <div class="wide reveal">')
-assert histblk in greet2
+strip = re.search(r'<div class="strip reveal">.*?\n      </div>', histin, re.S).group(0)
+cols = re.search(r'<ul class="cols">.*?</ul>', histin, re.S).group(0)
+# 오른쪽 글 아래 발자취 표(빈 공간 채움), 사진 3장은 2단 아래 전체 폭
+histblk = ('          <div class="b-hist" id="history"><h2>대표변호사 발자취</h2>\n          ' + cols
+           + '\n          <p style="margin-top:32px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p></div>\n')
+greet2 = greet.replace(career, histblk).replace('      <div class="wide reveal">', '      <div class="b-hist pics">' + strip + '</div>\n      <div class="wide reveal">')
+assert histblk in greet2 and strip in greet2
 P = cut(P, "인사말", greet)
 P = cut(P, "발자취", hist)
-assert P.count('\n  </div></section>\n') == 1  # 벤토 끝
-P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 인사말 -->\n  ' + greet2 + '\n', 1)
-assert greet2 in P
 
-# 5. 남색 띠 → 인용 2단 + 상담 절차 (슬라이더 없음)
+# 5. 남색 띠 삭제 → 상담 절차 + 인용 2단을 벤토와 인사말 사이로 (슬라이더 없음)
 steps = sec(C, "practice").replace('id="practice"', 'id="steps"')
 quote = '''  <section class="b-quote" id="phil">
     <div class="wrap">
@@ -80,9 +80,10 @@ quote = '''  <section class="b-quote" id="phil">
       <div class="mark reveal"><span class="mk">R<i>M</i></span><p><b>로펌 알엠 법률사무소</b>Reliable &amp; Meticulous — 믿을 수 있고, 꼼꼼하게. 의뢰인이 가장 힘든 순간에 곁에 있는 법률사무소가 되겠다는 뜻을 담았습니다.</p></div>
     </div>
   </section>'''
-phil = "  <!-- 철학 (다크 밴드) -->\n  " + sec(B, "phil")
-assert phil in P
-P = P.replace(phil, "  <!-- 상담 절차 -->\n" + steps + "\n\n  <!-- 철학 -->\n" + quote)
+P = cut(P, "철학", sec(B, "phil"))
+assert P.count('\n  </div></section>\n') == 1  # 벤토 끝
+P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 상담 절차 -->\n' + steps + "\n\n  <!-- 철학 -->\n" + quote + '\n\n  <!-- 인사말 -->\n  ' + greet2 + '\n', 1)
+assert greet2 in P
 
 # 6. 의뢰인 이야기 → CASES 안으로 합침 (4칸 한 줄)
 revs = re.findall(r'<a class="r reveal[^"]*".*?</a>', sec(C, "media"), re.S)
