@@ -40,6 +40,25 @@ newgrid = ('      <div class="grid">\n' + big + row(cards[0]) + row(cards[1]) + 
            + card("half", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html")
            + '      </div>')
 assert newgrid.count('class="card bg') == 5
+# C안: 사진 + 글 + 세부 썸네일 3장 (비교용, 버튼으로 전환)
+def cardc(cls, h3, p, pic, more, thumbs):
+    th = "".join(f'              <a href="{more}"><span><img src="img/{s}-sm.webp" alt="" loading="lazy"></span>{a}<b>{b}</b></a>\n' for s, a, b in thumbs)
+    return f"""        <div class="card {cls}">
+          <div class="pic"><img src="img/{pic}.webp" alt="" loading="lazy"></div>
+          <div class="body"><h3>{h3}</h3><p>{p}</p><a class="more" href="{more}">{h3} 전체 보기</a>
+            <div class="thumbs">
+{th}            </div>
+          </div>
+        </div>
+"""
+rowc = lambda c: re.sub(r'class="card reveal[^"]*"', 'class="card row reveal"', c)
+gridc = ('      <div class="grid grid-c">\n' + big + rowc(cards[0]) + rowc(cards[1]) + rowc(cards[3])
+         + cardc("reveal", "행정", "영업정지·면허취소 같은 처분에 대한 행정심판과 행정소송. 인허가와 과징금 대응까지.", "s-towers", "practice.html",
+                 [("s-hall", "영업정지·면허취소", "처분 취소"), ("s-lawbooks", "집행정지·심판 청구", "행정심판"), ("s-desk-city", "인허가·과징금", "행정소송")])
+         + cardc("reveal d1", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html",
+                 [("s-handshake", "구제신청·소송", "부당해고"), ("s-bills", "임금·퇴직금", "체불 청구"), ("s-writing", "징계·산재", "노사 분쟁")])
+         + '      </div>')
+newgrid += "\n" + gridc
 intro2 = re.sub(r'      <div class="big reveal d2">.*?    </div>\n  </section>',
                 '    </div>\n  </section>\n\n  <section class="c-bento"><div class="wrap">\n' + newgrid.replace("\\", "\\\\") + '\n  </div></section>', intro, flags=re.S)
 assert intro2 != intro
@@ -128,7 +147,13 @@ P = P.replace('href="#apply"', 'href="consult.html"').replace('href="#attorney">
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
 P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
 P = P.replace("<body>", '<body class="final">', 1)
-rails = '''<script>
+rails = """<nav class="abc"><a data-bento="a">A 가로</a><a data-bento="b">B 세로</a><a data-bento="c">C 상세</a></nav>
+<script>
+const setBento = v => { document.body.dataset.bento = v; document.querySelectorAll('.abc a').forEach(a => a.classList.toggle('on', a.dataset.bento === v)); try { localStorage.bento = v; } catch (e) {} };
+document.querySelectorAll('.abc a').forEach(a => a.onclick = () => setBento(a.dataset.bento));
+setBento(new URLSearchParams(location.search).get('bento') || localStorage.bento || 'a');
+</script>
+""" + '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {
   const r = document.querySelector(b.dataset.railPrev || b.dataset.railNext);
   r.scrollBy({ left: (b.dataset.railPrev ? -1 : 1) * r.clientWidth * .8, behavior: 'smooth' });
