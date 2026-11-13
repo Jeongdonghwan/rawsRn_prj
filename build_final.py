@@ -51,13 +51,16 @@ P = cut(P, "경쟁력", sec(B, "edge"))
 
 # 3. 탭: 경쟁력·발자취 빼고 약력 페이지 링크
 P = re.sub(r'(<nav class="b-tabs"[^>]*>\s*<div class="wrap">)\s*<a .*?</a>(\s*</div>)',
-           r'\1<a href="#attorney" class="on">대표변호사 인사말</a><a href="#about2">알엠 소개</a><a href="profile.html">대표변호사 약력</a><a href="#practice">업무분야</a><a href="#location">오시는 길</a>\2', P, flags=re.S)
+           r'\1<a href="#attorney" class="on">대표변호사 인사말</a><a href="#about2">알엠 소개</a><a href="#history">발자취</a><a href="profile.html">대표변호사 약력</a><a href="#practice">업무분야</a><a href="#location">오시는 길</a>\2', P, flags=re.S)
 assert "알엠의 경쟁력" not in P
 
-# 인사말: 약력표 → 별도 페이지 링크
+# 인사말: 약력표 아래 별도 페이지 링크, 섹션을 벤토 위로 (소개 제목 바로 아래)
 greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
-P = P.replace(career, career + '          <p style="margin-top:28px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n')
+greet2 = greet.replace(career, career + '          <p style="margin-top:28px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n')
+P = cut(P, "인사말", greet)
+P = P.replace('\n  <section class="c-bento">', '\n  <!-- 인사말 -->\n  ' + greet2 + '\n\n  <section class="c-bento">', 1)
+assert greet2 in P
 
 # 5. 남색 띠 → 인용 2단 + 상담 절차 (슬라이더 없음)
 steps = sec(C, "practice").replace('id="practice"', 'id="steps"')
@@ -72,10 +75,7 @@ quote = '''  <section class="b-quote" id="phil">
   </section>'''
 phil = "  <!-- 철학 (다크 밴드) -->\n  " + sec(B, "phil")
 assert phil in P
-P = P.replace(phil, "  <!-- 철학 -->\n" + quote + "\n\n  <!-- 상담 절차 -->\n" + steps)
-
-# 발자취 → profile.html 로 이동
-P = cut(P, "발자취", sec(B, "history"))
+P = P.replace(phil, "  <!-- 상담 절차 -->\n" + steps + "\n\n  <!-- 철학 -->\n" + quote)
 
 # 6. 의뢰인 이야기 → CASES 안으로 합침 (4칸 한 줄)
 revs = re.findall(r'<a class="r reveal[^"]*".*?</a>', sec(C, "media"), re.S)
