@@ -45,7 +45,7 @@
 
 /* 2차 수정: 폭 확장·히어로 키움 */
 .final .wrap { width: min(2200px, 100% - 120px); }
-.final .b-intro { padding-top: 36px; }
+.final .b-intro { padding-top: 14px; }
 .final .b-intro h2 { margin-top: 0; }
 .final .b-intro .sub { margin-top: 10px; }
 .final .b-intro h2 small { display: block; font-size: 18px; font-weight: 600; letter-spacing: .3em; color: var(--gray); margin-top: 14px; }
