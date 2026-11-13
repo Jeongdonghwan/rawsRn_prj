@@ -64,8 +64,8 @@ cols = re.search(r'<ul class="cols">.*?</ul>', histin, re.S).group(0)
 # 오른쪽 글 아래 발자취 표(빈 공간 채움), 사진 3장은 2단 아래 전체 폭
 histblk = ('          <div class="b-hist" id="history"><h2>대표변호사 발자취</h2>\n          ' + cols
            + '\n          <p style="margin-top:32px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p></div>\n')
-greet2 = greet.replace(career, histblk).replace('      <div class="wide reveal">', '      <div class="b-hist pics">' + strip + '</div>\n      <div class="wide reveal">')
-assert histblk in greet2 and strip in greet2
+greet2 = greet.replace(career, histblk)  # 사진 3장 띠는 메인에서 빼고 profile.html 에만 (상담실 사진 하나만 남김)
+assert histblk in greet2
 P = cut(P, "인사말", greet)
 P = cut(P, "발자취", hist)
 
