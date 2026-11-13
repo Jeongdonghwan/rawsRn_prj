@@ -42,3 +42,46 @@
   .b-quote blockquote { padding: 26px 22px 26px 40px; }
   .final .c-bento { margin-top: 30px; padding: 30px 0 40px; }
 }
+
+/* 2차 수정: 폭 확장·히어로 키움 */
+.final .wrap { width: min(1520px, 100% - 48px); }
+.final .hero { height: clamp(760px, 100vh, 1200px); }
+.final .b-greet .txt { font-size: 20px; }
+
+/* 분야 벤토: 형사·민사·가사 한 줄씩 + 행정·노무 반반 */
+.final .c-bento .grid { grid-template-rows: auto; }
+.final .c-bento .big { grid-row: 1 / 5; min-height: 0; }
+.final .c-bento .card.row { grid-column: 2 / 4; flex-direction: row; }
+.final .c-bento .card.row .pic { flex: 0 0 38%; aspect-ratio: auto; }
+.final .c-bento .card.row .body { flex: 1; }
+.final .c-bento .card.row .thumbs { grid-template-columns: repeat(3, 1fr); max-width: 520px; }
+
+/* 의뢰인 이야기 (CASES 안) */
+.final .cases-home .c-rev { padding: 70px 0 0; }
+.final .c-rev.sub .inner { grid-template-columns: repeat(4, 1fr); }
+
+/* 갤러리 (MEDIA 안, 다크) */
+.final .media .c-gal { padding: 70px 0 0; }
+.final .media .c-gal .head h2 { color: var(--white); }
+.final .media .c-gal .head a.more { color: rgba(255,255,255,.8); border-color: rgba(255,255,255,.5); }
+.final .media .c-gal .head .nav button { background: transparent; color: var(--white); border-color: rgba(255,255,255,.4); }
+.final .media .c-gal .head .nav button:hover { background: var(--white); color: var(--ink); }
+.final .media .c-gal .g { border-color: rgba(255,255,255,.15); }
+
+/* 오시는 길: 가로로 길게 */
+.final .apply.loc .map { aspect-ratio: 21 / 8; }
+.final .apply.loc dl { grid-template-columns: 110px 1fr 110px 1fr; column-gap: 24px; }
+
+@media (max-width: 1100px) {
+  .final .c-bento .card.row .pic { flex-basis: 42%; }
+  .final .c-rev.sub .inner { grid-template-columns: 1fr 1fr; }
+  .final .apply.loc dl { grid-template-columns: 110px 1fr; }
+}
+@media (max-width: 760px) {
+  .final .hero { height: 100svh; }
+  .final .c-bento .big { grid-row: auto; min-height: 360px; }
+  .final .c-bento .card.row { grid-column: auto; flex-direction: column; }
+  .final .c-bento .card.row .pic { aspect-ratio: 11/9; }
+  .final .c-rev.sub .inner { grid-template-columns: 1fr; }
+  .final .apply.loc .map { aspect-ratio: 4/3; }
+}

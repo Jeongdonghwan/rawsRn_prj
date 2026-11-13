@@ -35,10 +35,13 @@ CLIENTS_HTML = '''  <!-- CLIENTS -->
 '''
 VIDEO = '<video class="bg" autoplay muted loop playsinline poster="img/hero-bg.webp" data-day="video/hero-day.mp4" data-night="video/hero-night.mp4"></video>'
 vid = lambda h: h.replace('<img class="bg" src="img/hero-bg.webp" alt="">', VIDEO)
-for f in ["index.html", "b.html", "c.html", "cases.html", "news.html", "practice.html"]:
+for f in ["index.html", "b.html", "c.html", "cases.html", "news.html", "practice.html", "mix-a.html", "mix-b.html", "mix-c.html"]:
     s = vid(rd(f))
     for a, b in REP:
-        if b not in s or a in s: s = s.replace(a, b)
+        if b not in s: s = s.replace(a, b)
+    s = re.sub(r'(<span><b>이메일</b> lfrm2026@naver.com</span>)+', r'\1', s)
+    s = re.sub(r'(<dt>이메일</dt><dd>lfrm2026@naver.com</dd>\s*)+', r'\1', s)
+    s = re.sub(r'(<p>lfrm2026@naver.com</p>)+', r'\1', s)
     if "<!-- CLIENTS -->" not in s:
         mark = "  <!-- CASES -->" if "  <!-- CASES -->" in s else ("  <!-- 의뢰인 후기" if "  <!-- 의뢰인 후기" in s else None)
         if mark: s = s.replace(mark, CLIENTS_HTML + mark, 1)

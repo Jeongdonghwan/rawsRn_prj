@@ -10,6 +10,7 @@ if (splash) { // ponytail: 매 진입마다 재생. 세션당 1회로 바꾸려�
   document.body.classList.add('lock');
   splash.querySelector('.name').innerHTML = [...'로펌 알엠 법률사무소']
     .map((c, i) => `<span style="animation-delay:${0.2 + i * 0.08}s">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  splash.querySelector('.name').insertAdjacentHTML('afterend', '<div class="en">LAW FIRM RM</div>');
   let closed = false;
   const close = () => {
     if (closed) return;

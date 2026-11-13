@@ -40,17 +40,18 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 .circ { width: 96px; height: 96px; border-radius: 50%; border: 1px solid currentColor; display: grid; place-items: center; font-size: 34px; font-weight: 300; transition: .3s; }
 
 /* ---------- Splash ---------- */
-#splash { position: fixed; inset: 0; z-index: 1000; background: var(--dark); display: grid; place-items: center; color: var(--white); transition: opacity .7s var(--ease), visibility .7s; }
+#splash { position: fixed; inset: 0; min-height: 100dvh; z-index: 1000; background: var(--dark); display: grid; place-items: center; color: var(--white); transition: opacity .7s var(--ease), visibility .7s; }
 #splash.done { opacity: 0; visibility: hidden; }
-#splash .mark { text-align: center; }
+#splash .mark { text-align: center; display: inline-grid; justify-items: center; padding: 0 24px; }
 #splash .rm { font-size: 96px; font-weight: 900; letter-spacing: -.04em; line-height: 1; opacity: 0; transform: translateY(20px); animation: up .8s .2s var(--ease) forwards; }
 #splash .rm i { font-style: normal; color: var(--red); }
-#splash .name { font-size: 40px; font-weight: 800; letter-spacing: .12em; }
+#splash .name { font-size: clamp(22px, 5vw, 40px); font-weight: 800; letter-spacing: .12em; white-space: nowrap; }
+#splash .en { font-size: clamp(11px, 1.4vw, 14px); letter-spacing: .5em; margin: 14px 0 0 .5em; opacity: 0; animation: up .6s 1.3s var(--ease) forwards; }
 #splash .name span { display: inline-block; opacity: 0; transform: translateY(14px); animation: up .6s var(--ease) forwards; }
-#splash .line { width: 0; height: 2px; background: var(--red); margin: 26px auto 0; animation: grow .8s 1.5s var(--ease) forwards; }
+#splash .line { width: 0; height: 2px; background: var(--red); margin: 20px 0 0; justify-self: stretch; animation: grow .8s 1.5s var(--ease) forwards; }
 #splash .skip { position: absolute; right: 28px; bottom: 28px; color: rgba(255,255,255,.5); font-size: 13px; letter-spacing: .1em; }
 @keyframes up { to { opacity: 1; transform: none; } }
-@keyframes grow { to { width: 64px; } }
+@keyframes grow { to { width: 100%; } }
 
 /* ---------- Header ---------- */
 .topbar { background: #000; color: var(--white); font-size: 15px; font-weight: 500; }
