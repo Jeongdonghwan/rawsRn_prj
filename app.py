@@ -7,7 +7,7 @@ from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, redirect, request
 
 load_dotenv()
 
@@ -22,6 +22,11 @@ log = logging.getLogger("consult")
 @app.get("/")
 def index():
     return app.send_static_file("index.html")
+
+
+@app.get("/final.html")  # 시안 확인용 옛 주소
+def final():
+    return redirect("/", 301)
 
 
 def save_csv(row: list[str]) -> None:

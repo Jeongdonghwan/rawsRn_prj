@@ -92,13 +92,6 @@ if (form) form.addEventListener('submit', async e => {
   }
 });
 
-// 시안 A/B/C 전환 (데모용 — 확정 후 제거)
-{
-  const cur = location.pathname.replace(/^\//, '') || 'index.html';
-  const sw = document.createElement('nav'); sw.className = 'abc';
-  sw.innerHTML = [['A', 'index.html'], ['B', 'b.html'], ['C', 'c.html'], ['믹스A', 'mix-a.html'], ['믹스B', 'mix-b.html'], ['믹스C', 'mix-c.html'], ['최종', 'final.html']].map(([k, h]) => `<a href="${h}" class="${h === cur ? 'on' : ''}">${k}안</a>`).join('');
-  document.body.appendChild(sw);
-}
 
 // 히어로 영상: 06~17시 낮, 18~05시 밤. ?t=day / ?t=night 로 강제 확인
 {

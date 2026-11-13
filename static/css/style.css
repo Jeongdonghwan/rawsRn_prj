@@ -424,13 +424,9 @@ details.news .body { margin-top: 20px; padding: 24px; background: #f2f2f2; font-
 }
 
 /* 시안 전환 (데모용) */
-.abc { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 90; display: flex; background: rgba(18,28,48,.92); border-radius: 999px; padding: 4px; box-shadow: 0 8px 24px rgba(0,0,0,.25); backdrop-filter: blur(6px); }
-.abc a { color: #fff; font-size: 13px; font-weight: 700; padding: 8px 18px; border-radius: 999px; opacity: .7; }
-.abc a.on { background: #fff; color: #121c30; opacity: 1; }
 
 /* 기업 법률자문 */
 .clients ul { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .clients li { border: 1px solid var(--line); background: #fff; padding: 20px 16px; text-align: center; font-weight: 600; font-size: 15px; border-radius: 4px; }
 @media (max-width: 760px) { .clients ul { grid-template-columns: 1fr 1fr; } .clients li { font-size: 13px; padding: 14px 8px; } }
 .hero video.bg { animation: none; }
-.abc a { padding: 8px 12px; font-size: 12px; }

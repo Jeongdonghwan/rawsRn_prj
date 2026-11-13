@@ -1,10 +1,11 @@
-"""최종안 static/final.html + consult.html + profile.html 조립: b.html 기반 + c.html 블록.
+"""메인 static/index.html + consult.html + profile.html 조립: src/b.html 기반 + src/c.html 블록.
 실행: python build_final.py (build_pages.py 다음에)"""
 import re, os
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 rd = lambda f: open(os.path.join(R, f), encoding="utf-8").read()
+src = lambda f: open(os.path.join(R, "..", "src", f), encoding="utf-8").read()
 wr = lambda f, s: open(os.path.join(R, f), "w", encoding="utf-8").write(s)
-B, C, T = rd("b.html"), rd("c.html"), rd("cases.html")
+B, C, T = src("b.html"), src("c.html"), rd("cases.html")
 
 def sec(src, key, tag="section"):
     m = re.search(rf'<{tag}[^>]*(?:id="{key}"|class="{key}[" ])[^>]*>.*?</{tag}>', src, re.S)
@@ -108,7 +109,7 @@ P = re.sub(r"fetch\('data/news\.json'\).*?\n\}\);\n", "", P, flags=re.S)
 assert "home-press" not in P
 
 # 상담 문의: 영문 제목 삭제, 두 번째 카드 '상담신청'
-P = P.replace('<h2 class="en">CONSULTING</h2>', '<h2>상담 문의</h2>').replace('<h3>온라인 문의</h3>', '<h3>상담신청</h3>')
+P = P.replace('<h2 class="en">CONSULTING</h2>', '<h2>상담 문의</h2>').replace('<h2 class="en">CASES</h2>', '<h2>사건사례</h2>').replace('<h2 class="en">MEDIA</h2>', '<h2>방송·미디어</h2>').replace('<h3>온라인 문의</h3>', '<h3>상담신청</h3>')
 
 # 상담 신청 폼 → consult.html, 메인은 오시는 길만 가로로 길게
 apply = sec(B, "apply")
@@ -125,7 +126,7 @@ P = P.replace('href="#apply"', 'href="consult.html"').replace('href="#attorney">
 
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
-P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 최종안</title>", P)
+P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
 P = P.replace("<body>", '<body class="final">', 1)
 rails = '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {
@@ -139,8 +140,8 @@ P = P.replace('<script src="js/main.js"></script>', rails + '<script src="js/mai
 ids = re.findall(r' id="([^"]+)"', P)
 dup = {i for i in ids if ids.count(i) > 1}
 assert not dup, dup
-wr("final.html", P)
-print("built final.html", len(P))
+wr("index.html", P)
+print("built index.html", len(P))
 
 # ---- 서브 페이지 (cases.html 틀) ----
 head = T[:T.index('<section class="sub-hero">')]
@@ -149,6 +150,7 @@ for a, b in [('href="./#apply"', 'href="consult.html"'), ('href="./#attorney">�
     head, foot = head.replace(a, b), foot.replace(a, b)
 foot = re.sub(r'    <div class="top">.*?\n    </div>\n', "", foot, flags=re.S)
 head = hdr(head)
+for f in ("cases.html", "news.html", "practice.html"): wr(f, hdr(rd(f)))  # 서브페이지 머리도 동일하게
 def sub(name, title, desc, lab, h1, p, body, css="", cta=True):
     h = head.replace('<link rel="stylesheet" href="css/style.css">', '<link rel="stylesheet" href="css/style.css">' + css)
     h = re.sub(r"<title>.*?</title>", f"<title>{title} | 로펌 알엠 법률사무소</title>", h)
