@@ -45,20 +45,21 @@
 
 /* 2차 수정: 폭 확장·히어로 키움 */
 .final .wrap { width: min(2200px, 100% - 120px); }
-.final .b-intro { padding-top: 64px; }
+.final .b-intro { padding-top: 36px; }
 .final .b-intro h2 { margin-top: 0; }
-.final .b-intro .sub { margin-top: 14px; }
+.final .b-intro .sub { margin-top: 10px; }
 .final .b-intro h2 small { display: block; font-size: 18px; font-weight: 600; letter-spacing: .3em; color: var(--gray); margin-top: 14px; }
 .final .hero { height: clamp(760px, 100vh, 1200px); }
 .final .b-greet .txt { font-size: 20px; }
 
 /* 분야 벤토: 카드마다 배경 사진 하나 + 제목·소개 (형사·민사·가사 한 줄씩, 행정·노무 반반) */
-.final .c-bento { margin-top: 28px; padding: 32px 0 56px; }
+.final .c-bento { margin-top: 0; padding: 22px 0 50px; }
 .final .c-bento .grid { grid-template-rows: auto; }
 .final .c-bento .big { grid-row: 1 / 5; min-height: 0; }
-.final .c-bento .card.bg { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 150px; color: var(--white); }
+.final .c-bento .big .t h3 { font-size: clamp(26px, 2.2vw, 36px); }
+.final .c-bento .card.bg { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 220px; color: var(--white); }
 .final .c-bento .card.bg.row { grid-column: 2 / 4; }
-.final .c-bento .card.bg.half { min-height: 230px; }
+.final .c-bento .card.bg.half { min-height: 200px; }
 .final .c-bento .card.bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.75); transition: transform 1.2s var(--ease); }
 .final .c-bento .card.bg:hover img { transform: scale(1.04); }
 .final .c-bento .card.bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 20%, rgba(0,0,0,.7)); }
