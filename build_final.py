@@ -16,45 +16,48 @@ def cut(src, comment, block):  # "  <!-- 주석 -->\n  <section>" 통째로 제�
     assert out != src, comment
     return out
 
-P = B
+def hdr(s):  # 상단 검은 띠 삭제, 메뉴 3개(대표변호사·업무분야·업무사례)만, 메가메뉴 열도 맞춤
+    s = re.sub(r'<div class="topbar">.*?\n', "", s, count=1)
+    s = re.sub(r'      <a href="[^"]*">(소식·자료|상담신청|오시는 길)</a>\n', "", s)
+    s = re.sub(r'      <ul><li><a href="[^"]*">(언론보도|온라인 상담|주소 · 지도)</a>.*?</ul>\n', "", s)
+    assert "topbar" not in s and "소식·자료</a>" not in s[:s.index("</header>")]
+    return s
+P = hdr(B)
 # 1. 인트로 큰 사진 → 분야 벤토 (형사·민사·가사 한 줄씩 + 행정·노무 반반)
 intro = sec(B, "intro")
 grid = re.search(r'(      <div class="grid">.*?\n      </div>)\n    </div>\n  </section>', sec(C, "attorney"), re.S).group(1)
 big = re.search(r'        <a class="big.*?</a>\n', grid, re.S).group(0)
 cards = re.findall(r'        <div class="card reveal.*?\n        </div>\n', grid, re.S)
 assert len(cards) == 4, len(cards)
-row = lambda c: re.sub(r'class="card reveal[^"]*"', 'class="card row reveal"', c)
-def card(cls, h3, p, pic, more, thumbs):
-    th = "".join(f'              <a href="{more}"><span><img src="img/{s}-sm.webp" alt="" loading="lazy"></span>{a}<b>{b}</b></a>\n' for s, a, b in thumbs)
-    return f'''        <div class="card {cls}">
-          <div class="pic"><img src="img/{pic}.webp" alt="" loading="lazy"></div>
-          <div class="body"><h3>{h3}</h3><p>{p}</p><a class="more" href="{more}">{h3} 전체 보기</a>
-            <div class="thumbs">
-{th}            </div>
-          </div>
-        </div>
-'''
+def card(cls, h3, p, pic, more):  # 배경 사진 하나 + 제목·소개, 카드 전체가 링크
+    return f'        <a class="card bg {cls} reveal" href="{more}"><img src="img/{pic}.webp" alt="" loading="lazy"><div class="t"><h3>{h3}</h3><p>{p}</p></div></a>\n'
+def row(c):  # C안 카드에서 제목·소개·사진·링크만 뽑아 한 줄 카드로
+    h3, p, pic, more = [re.search(x, c, re.S).group(1) for x in (r'<h3>(.*?)</h3>', r'<p>(.*?)</p>', r'<img src="img/(.*?)\.webp', r'class="more" href="([^"]+)"')]
+    return card("row", h3, p, pic, more)
 newgrid = ('      <div class="grid">\n' + big + row(cards[0]) + row(cards[1]) + row(cards[3])
-           + card("reveal", "행정", "영업정지·면허취소 같은 처분에 대한 행정심판과 행정소송. 인허가와 과징금 대응까지.", "s-towers", "practice.html",
-                  [("s-hall", "영업정지·면허취소", "처분 취소"), ("s-lawbooks", "집행정지·심판 청구", "행정심판"), ("s-desk-city", "인허가·과징금", "행정소송")])
-           + card("reveal d1", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html",
-                  [("s-handshake", "구제신청·소송", "부당해고"), ("s-bills", "임금·퇴직금", "체불 청구"), ("s-writing", "징계·산재", "노사 분쟁")])
+           + card("half", "행정", "영업정지·면허취소 같은 처분에 대한 행정심판과 행정소송. 인허가와 과징금 대응까지.", "s-towers", "practice.html")
+           + card("half", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html")
            + '      </div>')
+assert newgrid.count('class="card bg') == 5
 intro2 = re.sub(r'      <div class="big reveal d2">.*?    </div>\n  </section>',
                 '    </div>\n  </section>\n\n  <section class="c-bento"><div class="wrap">\n' + newgrid.replace("\\", "\\\\") + '\n  </div></section>', intro, flags=re.S)
 assert intro2 != intro
 P = P.replace(intro, intro2)
+# 인트로 제목: 상호 + LAW FIRM RM 가운데
+P = P.replace('      <div class="eyebrow reveal">LAW FIRM RM · WIRYE, SEONGNAM</div>\n      <h2 class="reveal d1">로펌 알엠 법률사무소 소개</h2>',
+              '      <h2 class="reveal">로펌 알엠 법률사무소<small>LAW FIRM RM</small></h2>')
+assert "<small>LAW FIRM RM</small></h2>" in P
 
 # 2·4. 수치 4칸, 경쟁력 교차 섹션 삭제
 P = P.replace(sec(B, "b-stats"), "")
 P = cut(P, "경쟁력", sec(B, "edge"))
 
-# 3. 탭: 경쟁력·발자취 빼고 약력 페이지 링크
-P = re.sub(r'(<nav class="b-tabs"[^>]*>\s*<div class="wrap">)\s*<a .*?</a>(\s*</div>)',
-           r'\1<a href="#attorney" class="on">대표변호사 인사말</a><a href="#about2">알엠 소개</a><a href="#history">발자취</a><a href="profile.html">대표변호사 약력</a><a href="#practice">업무분야</a><a href="#location">오시는 길</a>\2', P, flags=re.S)
-assert "알엠의 경쟁력" not in P
+# 3. 소개 바로가기 탭 삭제 (인사말·발자취가 profile.html 로 빠져 남는 항목이 없음)
+P = re.sub(r'  <nav class="b-tabs".*?</nav>\n+', "", P, flags=re.S)
+P = re.sub(r'\n<script>\n// B: 앵커 탭.*?</script>\n', "", P, flags=re.S)
+assert "b-tabs" not in P
 
-# 인사말 + 발자취 한 섹션으로 (약력 8줄은 발자취 표와 겹쳐 발자취로 통일), 벤토 바로 아래
+# 인사말·발자취는 메인에서 빼고 profile.html 로 (2차 수정 요청)
 greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
 hist = sec(B, "history")
@@ -64,8 +67,6 @@ cols = re.search(r'<ul class="cols">.*?</ul>', histin, re.S).group(0)
 # 오른쪽 글 아래 발자취 표(빈 공간 채움), 사진 3장은 2단 아래 전체 폭
 histblk = ('          <div class="b-hist" id="history"><h2>대표변호사 발자취</h2>\n          ' + cols
            + '\n          <p style="margin-top:32px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p></div>\n')
-greet2 = greet.replace(career, histblk)  # 사진 3장 띠는 메인에서 빼고 profile.html 에만 (상담실 사진 하나만 남김)
-assert histblk in greet2
 P = cut(P, "인사말", greet)
 P = cut(P, "발자취", hist)
 
@@ -82,8 +83,8 @@ quote = '''  <section class="b-quote" id="phil">
   </section>'''
 P = cut(P, "철학", sec(B, "phil"))
 assert P.count('\n  </div></section>\n') == 1  # 벤토 끝
-P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 상담 절차 -->\n' + steps + "\n\n  <!-- 철학 -->\n" + quote + '\n\n  <!-- 인사말 -->\n  ' + greet2 + '\n', 1)
-assert greet2 in P
+P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 상담 절차 -->\n' + steps + "\n\n  <!-- 철학 -->\n" + quote + '\n', 1)
+assert "b-greet" not in P
 
 # 6. 의뢰인 이야기 → CASES 안으로 합침 (4칸 한 줄)
 revs = re.findall(r'<a class="r reveal[^"]*".*?</a>', sec(C, "media"), re.S)
@@ -120,7 +121,7 @@ P = re.sub(r'    <div class="top">.*?\n    </div>\n', "", P, flags=re.S)
 
 # 링크: 상담신청 → consult.html, 대표변호사 메뉴 → profile.html
 P = P.replace('href="#apply"', 'href="consult.html"').replace('href="#attorney">대표변호사</a>', 'href="profile.html">대표변호사</a>').replace('href="#attorney">주요 경력', 'href="profile.html">주요 경력')
-P = P.replace("btabs.map(a => document.querySelector(", "btabs.filter(a => a.getAttribute('href').startsWith('#')).map(a => document.querySelector(")
+
 
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
@@ -147,6 +148,7 @@ foot = T[T.index('<footer>'):]
 for a, b in [('href="./#apply"', 'href="consult.html"'), ('href="./#attorney">대표변호사', 'href="profile.html">대표변호사'), ('href="./#attorney">주요 경력', 'href="profile.html">주요 경력'), ('href="./#consult"', 'href="consult.html"')]:
     head, foot = head.replace(a, b), foot.replace(a, b)
 foot = re.sub(r'    <div class="top">.*?\n    </div>\n', "", foot, flags=re.S)
+head = hdr(head)
 def sub(name, title, desc, lab, h1, p, body, css="", cta=True):
     h = head.replace('<link rel="stylesheet" href="css/style.css">', '<link rel="stylesheet" href="css/style.css">' + css)
     h = re.sub(r"<title>.*?</title>", f"<title>{title} | 로펌 알엠 법률사무소</title>", h)

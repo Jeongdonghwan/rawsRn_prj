@@ -81,7 +81,7 @@ nav.menu a { position: relative; padding: 8px 0; }
 nav.menu a::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0; height: 2px; background: var(--white); transition: width .3s var(--ease); }
 nav.menu a:hover::after { width: 100%; }
 .hright { display: flex; align-items: center; gap: 24px; }
-.hright .call { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); border-radius: 999px; padding: 8px 18px; font-size: 15px; font-weight: 700; }
+.hright .call { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); border-radius: 999px; padding: 12px 28px; font-size: 20px; font-weight: 800; }
 .burger { width: 30px; height: 20px; position: relative; }
 .burger i { position: absolute; left: 0; right: 0; height: 2px; background: currentColor; }
 .burger i:nth-child(1) { top: 0; } .burger i:nth-child(2) { top: 9px; } .burger i:nth-child(3) { top: 18px; }

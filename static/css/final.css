@@ -44,17 +44,24 @@
 }
 
 /* 2차 수정: 폭 확장·히어로 키움 */
-.final .wrap { width: min(1520px, 100% - 48px); }
+.final .wrap { width: min(1760px, 100% - 48px); }
+.final .b-intro h2 small { display: block; font-size: 18px; font-weight: 600; letter-spacing: .3em; color: var(--gray); margin-top: 14px; }
 .final .hero { height: clamp(760px, 100vh, 1200px); }
 .final .b-greet .txt { font-size: 20px; }
 
-/* 분야 벤토: 형사·민사·가사 한 줄씩 + 행정·노무 반반 */
+/* 분야 벤토: 카드마다 배경 사진 하나 + 제목·소개 (형사·민사·가사 한 줄씩, 행정·노무 반반) */
+.final .c-bento { margin-top: 40px; padding: 40px 0 60px; }
 .final .c-bento .grid { grid-template-rows: auto; }
 .final .c-bento .big { grid-row: 1 / 5; min-height: 0; }
-.final .c-bento .card.row { grid-column: 2 / 4; flex-direction: row; }
-.final .c-bento .card.row .pic { flex: 0 0 38%; aspect-ratio: auto; }
-.final .c-bento .card.row .body { flex: 1; }
-.final .c-bento .card.row .thumbs { grid-template-columns: repeat(3, 1fr); max-width: 520px; }
+.final .c-bento .card.bg { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 150px; color: var(--white); }
+.final .c-bento .card.bg.row { grid-column: 2 / 4; }
+.final .c-bento .card.bg.half { min-height: 230px; }
+.final .c-bento .card.bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.75); transition: transform 1.2s var(--ease); }
+.final .c-bento .card.bg:hover img { transform: scale(1.04); }
+.final .c-bento .card.bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 20%, rgba(0,0,0,.7)); }
+.final .c-bento .card.bg .t { position: relative; z-index: 1; padding: 22px 28px; }
+.final .c-bento .card.bg h3 { font-size: 26px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+.final .c-bento .card.bg p { color: rgba(255,255,255,.88); font-size: 15px; margin-top: 4px; }
 
 /* 의뢰인 이야기 (CASES 안) */
 .final .cases-home .c-rev { padding: 70px 0 0; }
@@ -73,15 +80,14 @@
 .final .apply.loc dl { grid-template-columns: 110px 1fr 110px 1fr; column-gap: 24px; }
 
 @media (max-width: 1100px) {
-  .final .c-bento .card.row .pic { flex-basis: 42%; }
   .final .c-rev.sub .inner { grid-template-columns: 1fr 1fr; }
   .final .apply.loc dl { grid-template-columns: 110px 1fr; }
 }
 @media (max-width: 760px) {
   .final .hero { height: 100svh; }
   .final .c-bento .big { grid-row: auto; min-height: 360px; }
-  .final .c-bento .card.row { grid-column: auto; flex-direction: column; }
-  .final .c-bento .card.row .pic { aspect-ratio: 11/9; }
+  .final .c-bento .card.bg.row { grid-column: auto; }
+  .final .c-bento .card.bg { min-height: 170px; }
   .final .c-rev.sub .inner { grid-template-columns: 1fr; }
   .final .apply.loc .map { aspect-ratio: 4/3; }
 }
