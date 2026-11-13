@@ -54,11 +54,17 @@ P = re.sub(r'(<nav class="b-tabs"[^>]*>\s*<div class="wrap">)\s*<a .*?</a>(\s*</
            r'\1<a href="#attorney" class="on">대표변호사 인사말</a><a href="#about2">알엠 소개</a><a href="#history">발자취</a><a href="profile.html">대표변호사 약력</a><a href="#practice">업무분야</a><a href="#location">오시는 길</a>\2', P, flags=re.S)
 assert "알엠의 경쟁력" not in P
 
-# 인사말: 약력표 아래 별도 페이지 링크, 섹션을 벤토 위로 (소개 제목 바로 아래)
+# 인사말 + 발자취 한 섹션으로 (약력 8줄은 발자취 표와 겹쳐 발자취로 통일), 벤토 바로 아래
 greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
-greet2 = greet.replace(career, career + '          <p style="margin-top:28px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n')
+hist = sec(B, "history")
+histin = re.search(r'<div class="wrap">\n(.*?)\n    </div>\n  </section>$', hist, re.S).group(1)
+histblk = ('      <div class="b-hist" id="history">\n' + histin
+           + '\n        <p style="margin-top:36px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n      </div>\n')
+greet2 = greet.replace(career, "").replace('      <div class="wide reveal">', histblk + '      <div class="wide reveal">')
+assert histblk in greet2
 P = cut(P, "인사말", greet)
+P = cut(P, "발자취", hist)
 assert P.count('\n  </div></section>\n') == 1  # 벤토 끝
 P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 인사말 -->\n  ' + greet2 + '\n', 1)
 assert greet2 in P
