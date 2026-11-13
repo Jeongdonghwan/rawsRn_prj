@@ -59,7 +59,8 @@ greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
 greet2 = greet.replace(career, career + '          <p style="margin-top:28px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n')
 P = cut(P, "인사말", greet)
-P = P.replace('\n  <section class="c-bento">', '\n  <!-- 인사말 -->\n  ' + greet2 + '\n\n  <section class="c-bento">', 1)
+assert P.count('\n  </div></section>\n') == 1  # 벤토 끝
+P = P.replace('\n  </div></section>\n', '\n  </div></section>\n\n  <!-- 인사말 -->\n  ' + greet2 + '\n', 1)
 assert greet2 in P
 
 # 5. 남색 띠 → 인용 2단 + 상담 절차 (슬라이더 없음)
