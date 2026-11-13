@@ -93,6 +93,9 @@ if (form) form.addEventListener('submit', async e => {
 });
 
 
+// 분야 카드 비교용: ?bento=v 세로 버전
+if (new URLSearchParams(location.search).get("bento") === "v") document.body.classList.add("bento-v");
+
 // 히어로 영상: 06~17시 낮, 18~05시 밤. ?t=day / ?t=night 로 강제 확인
 {
   const v = document.querySelector('video.bg[data-night]');
