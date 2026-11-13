@@ -169,8 +169,12 @@ sub("consult.html", "상담 신청", "로펌 알엠 법률사무소 온라인 �
     "CONSULTING", "상담 신청", "사건 개요를 남겨주시면 대표변호사가 직접 확인하고 연락드립니다. 전화 1644-7702, 카카오톡 채널로도 24시간 접수합니다.",
     apply.replace('<section class="sec apply" id="apply">', '<section class="sec apply" id="apply" style="padding-top:40px">'), cta=False)
 
-pg = greet.replace(career, "").replace(re.search(r'      <div class="wide reveal">.*?</div>\n      </div>\n', greet, re.S).group(0), "")
+# 약력 페이지: 메인과 같은 2단(글 + 발자취 표), 아래에 사진 3장 (상담실 사진 자리에)
+wide = re.search(r'      <div class="wide reveal">.*?</div>\n      </div>\n', greet, re.S).group(0)
+pg = greet.replace(career, re.sub(r'\n          <p style="margin-top:32px">.*?</p>', "", histblk)).replace(wide, '      <div class="b-hist pics">' + strip + '</div>\n')
 pg = pg.replace('<section class="b-greet" id="attorney">', '<section class="b-greet" id="attorney" style="padding-top:40px">')
+assert strip in pg and cols in pg
 sub("profile.html", "대표변호사", "로펌 알엠 법률사무소 대표변호사 변환봉 약력. 사법시험 합격, 前 서울지방변호사회 사무총장, 로스쿨 출강, 상장기업 법률자문, 특검 사건 변호.",
     "PROFILE", "대표변호사 변환봉", "사법시험을 거쳐 변호사가 된 뒤 서울지방변호사회 사무총장, 로스쿨 출강, 상장기업 법률자문과 특검 사건 변호를 두루 경험했습니다.",
-    pg + "\n\n" + sec(B, "history"), css='\n<link rel="stylesheet" href="css/b.css">')
+    pg, css='\n<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/final.css">')
+p = rd("profile.html").replace('<body class="sub">', '<body class="sub final">', 1); wr("profile.html", p)

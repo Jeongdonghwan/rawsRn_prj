@@ -91,6 +91,6 @@
 .final .b-greet .b-hist h2 { font-size: 22px; margin-bottom: 14px; }
 .final .b-greet .b-hist .cols { gap: 0 30px; padding-left: 22px; }
 .final .b-greet .b-hist .cols li { grid-template-columns: 84px 1fr; gap: 12px; padding: 13px 0; font-size: 15px; }
-.final .b-greet .b-hist.pics { padding: 0; }
+.final .b-greet .b-hist.pics { padding: 0 0 110px; }
 .final .b-greet .b-hist .strip { margin: 60px 0 0; }
 .final .b-greet .wide { margin-top: 24px; }
