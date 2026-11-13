@@ -57,7 +57,7 @@ assert "알엠의 경쟁력" not in P
 # 인사말: 약력표 → 별도 페이지 링크
 greet = sec(B, "attorney")
 career = re.search(r'          <ul class="career">.*?</ul>\n', greet, re.S).group(0)
-P = P.replace(career, '          <p><a class="pill sm arrow" href="profile.html">대표변호사 약력 보기</a></p>\n')
+P = P.replace(career, career + '          <p style="margin-top:28px"><a class="pill sm arrow" href="profile.html">대표변호사 약력 자세히 보기</a></p>\n')
 
 # 5. 남색 띠 → 인용 2단 + 상담 절차 (슬라이더 없음)
 steps = sec(C, "practice").replace('id="practice"', 'id="steps"')
