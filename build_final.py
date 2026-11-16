@@ -4,7 +4,19 @@ import re, os
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 rd = lambda f: open(os.path.join(R, f), encoding="utf-8").read()
 src = lambda f: open(os.path.join(R, "..", "src", f), encoding="utf-8").read()
-wr = lambda f, s: open(os.path.join(R, f), "w", encoding="utf-8").write(s)
+QUICK = """<div class="quick">
+  <a class="q-t" href="tel:16447702"><em>전화상담</em><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><b>1644<i>-</i>7702</b></a>
+  <div class="q-w">
+    <a class="kakao q-k" href="#"><span><svg viewBox="0 0 24 24"><path d="M12 4C6.5 4 3 7.3 3 11c0 2.3 1.5 4.3 3.8 5.5L6 20l4-2.3c.6.1 1.3.2 2 .2 5.5 0 9-3.3 9-7s-3.5-7-9-7z"/></svg></span>카톡 상담</a>
+    <a class="q-f" href="consult.html"><span><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/></svg></span>간편상담</a>
+  </div>
+  <a class="q-top" href="#" aria-label="맨 위로"><svg viewBox="0 0 24 24"><path d="M12 7l7 9H5z"/></svg>TOP</a>
+</div>
+"""
+def quick(s):  # 우측 플로팅: 전화(번호) + 카톡·간편상담 + TOP. 모든 페이지 공통
+    i, j = s.find('<div class="quick">'), s.find('<div class="mbar">')
+    return s if i < 0 else s[:i] + QUICK + s[j:]
+wr = lambda f, s: open(os.path.join(R, f), "w", encoding="utf-8").write(quick(s))
 B, C, T = src("b.html"), src("c.html"), rd("cases.html")
 
 def sec(src, key, tag="section"):

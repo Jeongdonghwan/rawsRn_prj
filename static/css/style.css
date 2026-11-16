@@ -243,15 +243,20 @@ footer .sns a { width: 48px; height: 48px; border: 1px solid var(--ink); border-
 .totop { position: absolute; right: calc((100% - min(1280px, 100% - 48px)) / 2); top: -26px; width: 52px; height: 52px; border-radius: 50%; background: var(--ink); color: var(--white); display: grid; place-items: center; font-size: 22px; }
 
 /* ---------- Quick menu ---------- */
-.quick { position: fixed; right: 28px; bottom: 40px; z-index: 90; display: flex; flex-direction: column; gap: 14px; }
-.quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; }
-.quick a em { font-style: normal; background: rgba(0,0,0,.65); color: var(--white); padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
-.quick a span { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; box-shadow: 0 8px 20px rgba(0,0,0,.18); transition: transform .2s; }
-.quick a:hover span { transform: translateY(-3px); }
+.quick { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 90; display: flex; flex-direction: column; gap: 10px; width: 88px; text-align: center; font-size: 13px; font-weight: 700; }
+.quick > * { border-radius: 14px; box-shadow: 0 8px 22px rgba(0,0,0,.16); }
+.quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .quick svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.quick .q-t { background: var(--navy); color: var(--white); padding: 0 0 14px; overflow: hidden; }
+.quick .q-t em { font-style: normal; align-self: stretch; background: rgba(0,0,0,.28); padding: 7px 0; margin-bottom: 4px; }
+.quick .q-t b { font-size: 16px; font-weight: 800; line-height: 1.15; }
+.quick .q-t b i { display: block; font-style: normal; line-height: .7; }
+.quick .q-w { background: var(--white); padding: 16px 0; display: flex; flex-direction: column; gap: 16px; color: var(--ink); }
+.quick .q-w span { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: #eceef2; transition: transform .2s; }
+.quick .q-w a:hover span { transform: translateY(-3px); }
 .quick .q-k span { background: #fee500; color: #3a1d1d; }
-.quick .q-f span { background: var(--navy); color: var(--white); }
-.quick .q-t span { background: var(--red); color: var(--white); }
+.quick .q-top { background: #16233f; color: var(--white); padding: 10px 0 12px; gap: 0; font-weight: 800; }
+.quick .q-top svg { fill: currentColor; stroke: none; width: 22px; height: 22px; }
 .mbar { display: none; }
 
 /* ---------- Sub page ---------- */

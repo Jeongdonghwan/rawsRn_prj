@@ -1,6 +1,6 @@
 const KAKAO_URL = '#'; // TODO: 카카오채널 URL (http://pf.kakao.com/_xxxx)
 document.querySelectorAll('.kakao').forEach(a => { a.href = KAKAO_URL; if (KAKAO_URL !== '#') a.target = '_blank'; });
-document.querySelector('.totop')?.addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); });
+document.querySelectorAll('.totop, .q-top').forEach(b => b.addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); }));
 
 // ---------- Splash ----------
 const splash = document.getElementById('splash');
