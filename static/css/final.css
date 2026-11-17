@@ -189,3 +189,4 @@
 .final .b-intro .sub.in b { background-size: 100% 100%; }
 @media (max-width: 760px) { .final .b-intro h2.in small::before, .final .b-intro h2.in small::after { width: 28px; } }
 @media (prefers-reduced-motion: reduce) { .final .b-intro *, .final .b-intro::before, .final .b-intro *::before, .final .b-intro *::after { transition: none !important; } }
+.final #practice { display: none; }  /* 메인 업무분야 섹션 숨김 (되살리려면 이 줄 삭제) */

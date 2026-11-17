@@ -162,6 +162,9 @@ a = '대표변호사가 직접 듣고 직접 변론합니다</p>'
 assert P.count(a) == 1
 P = P.replace(a, '대표변호사가 <b>직접 듣고 직접 변론</b>합니다</p>')
 
+# 메인의 '알엠 법률 서비스' 섹션은 숨김 (final.css), 그쪽 링크는 업무분야 페이지로
+P = P.replace('href="#practice"', 'href="practice.html"')
+
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
 P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
