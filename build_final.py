@@ -52,25 +52,6 @@ newgrid = ('      <div class="grid">\n' + big + row(cards[0]) + row(cards[1]) + 
            + card("half", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html")
            + '      </div>')
 assert newgrid.count('class="card bg') == 5
-# C안: 사진 + 글 + 세부 썸네일 3장 (비교용, 버튼으로 전환)
-def cardc(cls, h3, p, pic, more, thumbs):
-    th = "".join(f'              <a href="{more}"><span><img src="img/{s}-sm.webp" alt="" loading="lazy"></span>{a}<b>{b}</b></a>\n' for s, a, b in thumbs)
-    return f"""        <div class="card {cls}">
-          <div class="pic"><img src="img/{pic}.webp" alt="" loading="lazy"></div>
-          <div class="body"><h3>{h3}</h3><p>{p}</p><a class="more" href="{more}">{h3} 전체 보기</a>
-            <div class="thumbs">
-{th}            </div>
-          </div>
-        </div>
-"""
-rowc = lambda c: re.sub(r'class="card reveal[^"]*"', 'class="card row reveal"', c)
-gridc = ('      <div class="grid grid-c">\n' + big + rowc(cards[0]) + rowc(cards[1]) + rowc(cards[3])
-         + cardc("reveal", "행정", "영업정지·면허취소 같은 처분에 대한 행정심판과 행정소송. 인허가와 과징금 대응까지.", "s-towers", "practice.html",
-                 [("s-hall", "영업정지·면허취소", "처분 취소"), ("s-lawbooks", "집행정지·심판 청구", "행정심판"), ("s-desk-city", "인허가·과징금", "행정소송")])
-         + cardc("reveal d1", "노무", "부당해고·임금체불·산재. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다.", "s-meeting", "practice.html",
-                 [("s-handshake", "구제신청·소송", "부당해고"), ("s-bills", "임금·퇴직금", "체불 청구"), ("s-writing", "징계·산재", "노사 분쟁")])
-         + '      </div>')
-newgrid += "\n" + gridc
 intro2 = re.sub(r'      <div class="big reveal d2">.*?    </div>\n  </section>',
                 '    </div>\n  </section>\n\n  <section class="c-bento"><div class="wrap">\n' + newgrid.replace("\\", "\\\\") + '\n  </div></section>', intro, flags=re.S)
 assert intro2 != intro
@@ -169,20 +150,24 @@ P = P.replace(a, NL + NL + '  <!-- 강점 -->' + NL + why + a)
 # 배너 사진 교체, 방송·미디어 사진 자리에 유튜브
 a = '<img src="img/s-skyline.webp" alt="" loading="lazy">'
 assert P.count(a) == 1
-P = P.replace(a, a.replace("s-skyline", "s-library"))
+P = P.replace(a, a.replace("s-skyline", "s-boardroom"))
 YT = ""  # 유튜브 영상 ID 를 받으면 여기에 (예: "dQw4w9WgXcQ")
 a = '<div class="pic reveal"><img src="img/media.webp" alt="" loading="lazy"></div>'
 assert P.count(a) == 1
 P = P.replace(a, '<div class="pic yt reveal">' + (f'<iframe src="https://www.youtube-nocookie.com/embed/{YT}" title="로펌 알엠 유튜브" loading="lazy" allowfullscreen></iframe>' if YT
               else '<div class="ph"><svg viewBox="0 0 68 48"><rect width="68" height="48" rx="12"/><path d="M27 14l18 10-18 10z"/></svg><b>유튜브 영상 자리</b><small>영상 주소를 받으면 이 자리에서 바로 재생됩니다</small></div>') + '</div>')
 
+# 인트로 문구 강조
+a = '대표변호사가 직접 듣고 직접 변론합니다</p>'
+assert P.count(a) == 1
+P = P.replace(a, '대표변호사가 <b>직접 듣고 직접 변론</b>합니다</p>')
+
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
 P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
-P = P.replace("<body>", '<body class="final">', 1)
+P = P.replace("<body>", '<body class="final" data-bento="b">', 1)  # 분야 카드는 세로형 확정
 rails = """<nav class="abc">
 <span>메뉴</span><a data-k="gnb" data-v="a">A 가운데</a><a data-k="gnb" data-v="b">B 오른쪽</a>
-<span>분야</span><a data-k="bento" data-v="a">A 가로</a><a data-k="bento" data-v="b">B 세로</a><a data-k="bento" data-v="c">C 상세</a>
 <span>강점</span><a data-k="why" data-v="a">A 밝게</a><a data-k="why" data-v="b">B 카드</a>
 </nav>
 <script>
@@ -190,7 +175,7 @@ rails = """<nav class="abc">
 const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll('.abc a[data-k=' + k + ']').forEach(a => a.classList.toggle('on', a.dataset.v === v)); try { localStorage['rm2-' + k] = v; } catch (e) {} };
 const saved = k => { try { return localStorage['rm2-' + k]; } catch (e) {} };
 document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
-Object.entries({ gnb: 'a', bento: 'b', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
+Object.entries({ gnb: 'a', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
 </script>
 """ + '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {

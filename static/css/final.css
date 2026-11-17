@@ -111,13 +111,6 @@
 .abc a { color: #fff; font-size: 13px; font-weight: 700; padding: 7px 13px; border-radius: 999px; opacity: .7; cursor: pointer; }
 .abc a.on { background: #fff; color: #121c30; opacity: 1; }
 @media (max-width: 760px) { .abc { bottom: 82px; } }
-.final .c-bento .grid-c { display: none; }
-[data-bento=c] .c-bento .grid { display: none; }
-[data-bento=c] .c-bento .grid-c { display: grid; }
-.final .c-bento .grid-c .card.row { grid-column: 2 / 4; flex-direction: row; }
-.final .c-bento .grid-c .card.row .pic { flex: 0 0 38%; aspect-ratio: auto; }
-.final .c-bento .grid-c .card.row .body { flex: 1; }
-.final .c-bento .grid-c .card.row .thumbs { grid-template-columns: repeat(3, 1fr); max-width: 520px; }
 @media (min-width: 761px) {
   [data-bento=b] .c-bento .grid { grid-template-columns: repeat(8, 1fr); grid-template-rows: auto auto; }
   [data-bento=b] .c-bento .big { grid-column: 1 / 3; grid-row: 1 / 3; }
@@ -125,10 +118,6 @@
   [data-bento=b] .c-bento .card.bg.half { grid-column: span 3; grid-row: 2; min-height: clamp(200px, 25vh, 320px); }
   [data-gnb=b] nav.menu { margin-left: auto; margin-right: 48px; }
   [data-bento=b] .c-bento .card.bg::after { background: linear-gradient(180deg, rgba(0,0,0,.05) 35%, rgba(0,0,0,.75)); }
-}
-@media (max-width: 760px) {
-  .final .c-bento .grid-c .card.row { grid-column: auto; flex-direction: column; }
-  .final .c-bento .grid-c .card.row .pic { aspect-ratio: 11/9; }
 }
 
 /* 강점 4가지: A 밝게(왼쪽 제목 + 2x2 선) / B 카드(어두운 사진 + 파스텔 카드) */
@@ -176,3 +165,14 @@
 .final .media .pic.yt .ph small { font-size: 14px; opacity: .65; }
 .final .consult .bgimg { background-image: url(../img/s-court.webp); filter: saturate(.5) brightness(.6); }
 .final .consult::before { background: linear-gradient(180deg, rgba(14,22,44,.5), rgba(14,22,44,.82)); }
+
+/* 인트로 꾸밈: RM 워터마크, 붉은 짧은 선, 영문 양옆 선, 문구 강조 */
+.final .b-intro { position: relative; padding: 40px 0 30px; overflow: hidden; background: linear-gradient(180deg, var(--white), var(--paper)); }
+.final .b-intro::before { content: 'RM'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: clamp(180px, 22vw, 380px); font-weight: 900; letter-spacing: -.04em; line-height: 1; color: rgba(31,42,99,.035); pointer-events: none; }
+.final .b-intro .wrap { position: relative; }
+.final .b-intro h2::before { content: ''; display: block; width: 44px; height: 3px; background: var(--red); margin: 0 auto 20px; }
+.final .b-intro h2 small::before, .final .b-intro h2 small::after { content: ''; display: inline-block; vertical-align: middle; width: 70px; height: 1px; background: #b9bcc4; margin: 0 22px; }
+.final .b-intro .sub { margin-top: 14px; }
+.final .b-intro .sub b { color: var(--navy); font-weight: 800; background: linear-gradient(transparent 62%, rgba(31,42,99,.14) 62%); padding: 0 2px; }
+@media (max-width: 760px) { .final .b-intro h2 small::before, .final .b-intro h2 small::after { width: 28px; margin: 0 10px; } }
+.final .b-banner img { filter: brightness(.5) saturate(.85); }
