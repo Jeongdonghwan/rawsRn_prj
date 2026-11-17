@@ -155,15 +155,42 @@ P = re.sub(r'    <div class="top">.*?\n    </div>\n', "", P, flags=re.S)
 P = P.replace('href="#apply"', 'href="consult.html"').replace('href="#attorney">대표변호사</a>', 'href="profile.html">대표변호사</a>').replace('href="#attorney">주요 경력', 'href="profile.html">주요 경력')
 
 
+# 강점 4가지 (벤토 바로 아래, 시안 A 밝게 / B 카드). 문구는 B안 '경쟁력'에서 가져옴
+NL = chr(10)
+edge = re.findall(r'<div class="n">(.*?)</div><h3>(.*?)</h3><p>(.*?)</p>', B)[:4]
+assert len(edge) == 4
+why = ('  <section class="f-why" id="why">' + NL + '    <img src="img/s-justice.webp" alt="" loading="lazy">' + NL + '    <div class="wrap">' + NL
+       + '      <div class="l reveal"><small>WHY RM</small><h2>큰 로펌의 경험을,<br>가까운 거리에서<br>직접 수행합니다.</h2><p>상담부터 변론까지 대표변호사가 맡습니다. 특검 사건 변호와 상장기업 자문으로 쌓은 경험을 개인 의뢰인의 사건에 그대로 씁니다.</p></div>' + NL
+       + '      <ol>' + NL + "".join(f'        <li class="reveal"><i>{n}</i><h3>{h}</h3><p>{p}</p></li>' + NL for n, h, p in edge) + '      </ol>' + NL + '    </div>' + NL + '  </section>')
+a = NL + NL + '  <!-- 상담 절차 -->' + NL
+assert P.count(a) == 1
+P = P.replace(a, NL + NL + '  <!-- 강점 -->' + NL + why + a)
+
+# 배너 사진 교체, 방송·미디어 사진 자리에 유튜브
+a = '<img src="img/s-skyline.webp" alt="" loading="lazy">'
+assert P.count(a) == 1
+P = P.replace(a, a.replace("s-skyline", "s-library"))
+YT = ""  # 유튜브 영상 ID 를 받으면 여기에 (예: "dQw4w9WgXcQ")
+a = '<div class="pic reveal"><img src="img/media.webp" alt="" loading="lazy"></div>'
+assert P.count(a) == 1
+P = P.replace(a, '<div class="pic yt reveal">' + (f'<iframe src="https://www.youtube-nocookie.com/embed/{YT}" title="로펌 알엠 유튜브" loading="lazy" allowfullscreen></iframe>' if YT
+              else '<div class="ph"><svg viewBox="0 0 68 48"><rect width="68" height="48" rx="12"/><path d="M27 14l18 10-18 10z"/></svg><b>유튜브 영상 자리</b><small>영상 주소를 받으면 이 자리에서 바로 재생됩니다</small></div>') + '</div>')
+
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
 P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
 P = P.replace("<body>", '<body class="final">', 1)
-rails = """<nav class="abc"><a data-bento="a">A 가로</a><a data-bento="b">B 세로</a><a data-bento="c">C 상세</a></nav>
+rails = """<nav class="abc">
+<span>메뉴</span><a data-k="gnb" data-v="a">A 가운데</a><a data-k="gnb" data-v="b">B 오른쪽</a>
+<span>분야</span><a data-k="bento" data-v="a">A 가로</a><a data-k="bento" data-v="b">B 세로</a><a data-k="bento" data-v="c">C 상세</a>
+<span>강점</span><a data-k="why" data-v="a">A 밝게</a><a data-k="why" data-v="b">B 카드</a>
+</nav>
 <script>
-const setBento = v => { document.body.dataset.bento = v; document.querySelectorAll('.abc a').forEach(a => a.classList.toggle('on', a.dataset.bento === v)); try { localStorage.bento = v; } catch (e) {} };
-document.querySelectorAll('.abc a').forEach(a => a.onclick = () => setBento(a.dataset.bento));
-setBento(new URLSearchParams(location.search).get('bento') || localStorage.bento || 'a');
+// 시안 전환: body[data-gnb|bento|why]. 확정되면 기본값만 남기고 삭제
+const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll('.abc a[data-k=' + k + ']').forEach(a => a.classList.toggle('on', a.dataset.v === v)); try { localStorage['rm2-' + k] = v; } catch (e) {} };
+const saved = k => { try { return localStorage['rm2-' + k]; } catch (e) {} };
+document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
+Object.entries({ gnb: 'a', bento: 'b', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
 </script>
 """ + '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {
