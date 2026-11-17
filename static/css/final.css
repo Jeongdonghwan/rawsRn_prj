@@ -172,3 +172,20 @@
 .final .b-intro .sub b { color: var(--navy); font-weight: 800; background: linear-gradient(transparent 62%, rgba(31,42,99,.14) 62%); padding: 0 2px; }
 @media (max-width: 760px) { .final .b-intro h2 small::before, .final .b-intro h2 small::after { width: 28px; margin: 0 10px; } }
 .final .b-banner img { filter: brightness(.5) saturate(.85); }
+@media (max-width: 1200px) { .final .wrap { width: calc(100% - 48px); } }
+@media (max-width: 760px) { .final .wrap { width: calc(100% - 32px); } }
+@media (max-width: 760px) { .final .c-steps ol { grid-template-columns: 1fr; } }
+
+/* 인트로 등장 효과: 스크롤로 보이면 선이 자라고, RM 이 천천히 떠오르고, 강조 밑줄이 그어짐 */
+.final .b-intro::before { opacity: 0; transform: translate(-50%, -42%) scale(1.12); transition: opacity 2.2s var(--ease), transform 2.6s var(--ease); }
+.final .b-intro:has(h2.in)::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.final .b-intro h2::before { width: 0; transition: width .9s .5s var(--ease); }
+.final .b-intro h2.in::before { width: 44px; }
+.final .b-intro h2 small { opacity: 0; letter-spacing: .7em; transition: opacity 1.2s .6s, letter-spacing 1.6s .6s var(--ease); }
+.final .b-intro h2.in small { opacity: 1; letter-spacing: .3em; }
+.final .b-intro h2 small::before, .final .b-intro h2 small::after { width: 0; transition: width 1.2s 1s var(--ease); }
+.final .b-intro h2.in small::before, .final .b-intro h2.in small::after { width: 70px; }
+.final .b-intro .sub b { background-repeat: no-repeat; background-size: 0 100%; transition: background-size 1s 1.3s var(--ease); }
+.final .b-intro .sub.in b { background-size: 100% 100%; }
+@media (max-width: 760px) { .final .b-intro h2.in small::before, .final .b-intro h2.in small::after { width: 28px; } }
+@media (prefers-reduced-motion: reduce) { .final .b-intro *, .final .b-intro::before, .final .b-intro *::before, .final .b-intro *::after { transition: none !important; } }
