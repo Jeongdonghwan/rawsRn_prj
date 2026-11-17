@@ -140,7 +140,7 @@ P = P.replace('href="#apply"', 'href="consult.html"').replace('href="#attorney">
 NL = chr(10)
 edge = re.findall(r'<div class="n">(.*?)</div><h3>(.*?)</h3><p>(.*?)</p>', B)[:4]
 assert len(edge) == 4
-why = ('  <section class="f-why" id="why">' + NL + '    <img src="img/s-justice.webp" alt="" loading="lazy">' + NL + '    <div class="wrap">' + NL
+why = ('  <section class="f-why" id="why">' + NL + '    <div class="wrap">' + NL
        + '      <div class="l reveal"><small>WHY RM</small><h2>큰 로펌의 경험을,<br>가까운 거리에서<br>직접 수행합니다.</h2><p>상담부터 변론까지 대표변호사가 맡습니다. 특검 사건 변호와 상장기업 자문으로 쌓은 경험을 개인 의뢰인의 사건에 그대로 씁니다.</p></div>' + NL
        + '      <ol>' + NL + "".join(f'        <li class="reveal"><i>{n}</i><h3>{h}</h3><p>{p}</p></li>' + NL for n, h, p in edge) + '      </ol>' + NL + '    </div>' + NL + '  </section>')
 a = NL + NL + '  <!-- 상담 절차 -->' + NL
