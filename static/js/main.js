@@ -93,14 +93,17 @@ if (form) form.addEventListener('submit', async e => {
 });
 
 
-// 히어로 영상: 06~17시 낮, 18~05시 밤. ?t=day / ?t=night 로 강제 확인
-{
+// 히어로 영상: 기존은 06~17시 낮, 18~05시 밤 (?t=day / ?t=night 로 강제 확인).
+// 영상 시안 1~3 (body[data-vid], 메인 전환 버튼) 이면 그 영상
+window.heroVid = () => {
   const v = document.querySelector('video.bg[data-night]');
-  if (v) {
-    const h = new Date().getHours(), q = new URLSearchParams(location.search).get('t');
-    v.src = (q === 'night' || (q !== 'day' && (h >= 18 || h < 6))) ? v.dataset.night : v.dataset.day;
-  }
-}
+  if (!v) return;
+  const c = document.body.dataset.vid, h = new Date().getHours(), q = new URLSearchParams(location.search).get('t');
+  v.dataset.p ||= v.getAttribute('poster');
+  v.poster = c && c !== 'a' ? 'img/n/hero-v' + c + '.webp' : v.dataset.p;
+  v.src = c && c !== 'a' ? 'video/hero-v' + c + '.mp4' : (q === 'night' || (q !== 'day' && (h >= 18 || h < 6))) ? v.dataset.night : v.dataset.day;
+};
+heroVid();
 
 // 사진 시안 A(기존) 선택 시 되돌림 (메인 전환 버튼과 같은 저장값)
 try { if (localStorage['rm2-img'] === 'a') document.querySelectorAll('img[data-o]').forEach(i => i.src = i.dataset.o); } catch (e) {}
