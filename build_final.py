@@ -165,20 +165,41 @@ P = P.replace(a, '대표변호사가 <b>직접 듣고 직접 변론</b>합니다
 # 메인의 '알엠 법률 서비스' 섹션은 숨김 (final.css), 그쪽 링크는 업무분야 페이지로
 P = P.replace('href="#practice"', 'href="practice.html"')
 
+# 새 사진 (사진 시안 B, 기본). src = 새 사진, data-o = 기존 사진 → 전환 버튼 A 로 되돌림
+def newimg(s, pairs):  # (그 줄에만 있는 글자, 새 파일명): 줄의 첫 <img> 교체
+    L = s.split(NL); hit = {}
+    for n, line in enumerate(L):
+        for k, new in pairs:
+            if k in line and '<img src="img/' in line:
+                assert k not in hit, k
+                hit[k] = 1
+                L[n] = re.sub(r'<img src="(img/[^"]+)"', lambda m: f'<img src="img/n/{new}.webp" data-o="{m.group(1)}"', line, count=1)
+                break
+    assert len(hit) == len(pairs), set(k for k, _ in pairs) - set(hit)
+    return NL.join(L)
+P = newimg(P, [("img/s-hall.", "lawyer-doc"), ("img/s-gavel.", "handcuff"), ("img/s-justice.", "property"), ("img/s-family.", "couple"),
+               ("<h3>행정</h3>", "govt"), ("<h3>노무</h3>", "meeting3"),
+               ("img/s-hands-doc.", "pen"), ("img/s-sign.", "consult"), ("img/s-court.", "court"),
+               (' <img src="img/s-boardroom.', "night-office"),
+               ("img/s-consult.", "night-meet"), ("img/s-handshake.", "handshake"), ("img/s-typing.", "finance"), ('f=가사"><div class="pic">', "hands"),
+               ("img/s-newspapers.", "panel"), ("img/s-assembly.", "gavel"), ("상장기업 법률자문 · M&amp;A", "towers"), ("img/s-lecture.", "lawbooks"), ("위례 사무소 상담실", "table")])
+
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
 P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남 위례 형사·민사·가사 전문</title>", P)
 P = P.replace("<body>", '<body class="final" data-bento="b">', 1)  # 분야 카드는 세로형 확정
 rails = """<nav class="abc">
 <span>메뉴</span><a data-k="gnb" data-v="a">A 가운데</a><a data-k="gnb" data-v="b">B 오른쪽</a>
+<span>사진</span><a data-k="img" data-v="a">A 기존</a><a data-k="img" data-v="b">B 새 사진</a>
 <span>강점</span><a data-k="why" data-v="a">A 밝게</a><a data-k="why" data-v="b">B 카드</a>
 </nav>
 <script>
 // 시안 전환: body[data-gnb|bento|why]. 확정되면 기본값만 남기고 삭제
-const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll('.abc a[data-k=' + k + ']').forEach(a => a.classList.toggle('on', a.dataset.v === v)); try { localStorage['rm2-' + k] = v; } catch (e) {} };
+const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll('.abc a[data-k=' + k + ']').forEach(a => a.classList.toggle('on', a.dataset.v === v)); try { localStorage['rm2-' + k] = v; } catch (e) {}
+  if (k === 'img') document.querySelectorAll('img[data-o]').forEach(i => { i.dataset.n ||= i.getAttribute('src'); i.src = v === 'a' ? i.dataset.o : i.dataset.n; }); };
 const saved = k => { try { return localStorage['rm2-' + k]; } catch (e) {} };
 document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
-Object.entries({ gnb: 'a', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
+Object.entries({ gnb: 'a', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
 </script>
 """ + '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {
@@ -233,4 +254,6 @@ assert strip in pg and cols in pg
 sub("profile.html", "대표변호사", "로펌 알엠 법률사무소 대표변호사 변환봉 약력. 사법시험 합격, 前 서울지방변호사회 사무총장, 로스쿨 출강, 상장기업 법률자문, 특검 사건 변호.",
     "PROFILE", "대표변호사 변환봉", "사법시험을 거쳐 변호사가 된 뒤 서울지방변호사회 사무총장, 로스쿨 출강, 상장기업 법률자문과 특검 사건 변호를 두루 경험했습니다.",
     pg, css='\n<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/final.css">')
-p = rd("profile.html").replace('<body class="sub">', '<body class="sub final">', 1); wr("profile.html", p)
+p = rd("profile.html").replace('<body class="sub">', '<body class="sub final">', 1)
+p = newimg(p, [("img/s-lecture.", "library-book"), ("img/s-assembly.", "defense-seat"), ("img/s-library.", "bookshelf")])
+wr("profile.html", p)

@@ -159,7 +159,8 @@
 .final .media .pic.yt .ph path { fill: #fff; }
 .final .media .pic.yt .ph b { font-size: 20px; }
 .final .media .pic.yt .ph small { font-size: 14px; opacity: .65; }
-.final .consult .bgimg { background-image: url(../img/s-court.webp); filter: saturate(.5) brightness(.6); }
+.final .consult .bgimg { background-image: url(../img/n/glass.webp); filter: saturate(.7) brightness(.55); }
+[data-img=a] .consult .bgimg { background-image: url(../img/s-court.webp); filter: saturate(.5) brightness(.6); }
 .final .consult::before { background: linear-gradient(180deg, rgba(14,22,44,.5), rgba(14,22,44,.82)); }
 
 /* 인트로 꾸밈: RM 워터마크, 붉은 짧은 선, 영문 양옆 선, 문구 강조 */
