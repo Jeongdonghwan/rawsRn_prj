@@ -87,10 +87,6 @@ P = cut(P, "발자취", hist)
 steps = sec(C, "practice").replace('id="practice"', 'id="steps"')
 quote = '''  <section class="b-quote" id="phil">
     <div class="wrap">
-      <div class="cols">
-        <blockquote class="reveal"><h3>직접 듣고, 직접 변론한다</h3><p>로펌 알엠 법률사무소의 첫 번째 원칙입니다. 의뢰인의 사정을 가장 잘 아는 사람이 법정에 서야 합니다. 상담부터 변론까지 담당이 바뀌지 않습니다.</p></blockquote>
-        <blockquote class="reveal d1"><h3>결과 이후의 일상까지</h3><p>판결문은 끝이 아니라 시작입니다. 민사는 회수까지, 개인회생은 면책까지, 가사는 자녀의 내일까지. 결과 이후의 삶을 먼저 생각합니다.</p></blockquote>
-      </div>
       <div class="mark reveal"><span class="mk">R<i>M</i></span><p><b>로펌 알엠 법률사무소</b>Reliable &amp; Meticulous — 믿을 수 있고, 꼼꼼하게. 의뢰인이 가장 힘든 순간에 곁에 있는 법률사무소가 되겠다는 뜻을 담았습니다.</p></div>
     </div>
   </section>'''
