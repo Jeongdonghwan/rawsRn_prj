@@ -340,9 +340,10 @@ fetch('data/cases.json').then(r => r.json()).then(all => {
 const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll('.abc a[data-k=' + k + ']').forEach(a => a.classList.toggle('on', a.dataset.v === v)); try { localStorage['rm2-' + k] = v; } catch (e) {}
   if (k === 'vid') window.heroVid?.();
   if (k === 'img') document.querySelectorAll('img[data-o]').forEach(i => { i.dataset.n ||= i.getAttribute('src'); i.src = v === 'a' ? i.dataset.o : i.dataset.n; }); };
-const saved = k => { try { return localStorage['rm2-' + k]; } catch (e) {} };
 document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
-Object.entries({ gnb: 'a', vid: 'a', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, new URLSearchParams(location.search).get(k) || saved(k) || d));
+// 확정: 메뉴 B 오른쪽 · 영상 3 유리 빌딩 · 사진 B · 강점 A. 버튼은 숨김, 주소에 ?abc 붙이면 다시 보임
+const q = new URLSearchParams(location.search); if (q.has('abc')) document.querySelector('.abc').classList.add('show');
+Object.entries({ gnb: 'b', vid: '3', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, q.get(k) || d));
 </script>
 <script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {

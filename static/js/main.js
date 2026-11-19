@@ -105,5 +105,4 @@ window.heroVid = () => {
 };
 heroVid();
 
-// 사진 시안 A(기존) 선택 시 되돌림 (메인 전환 버튼과 같은 저장값)
-try { if (localStorage['rm2-img'] === 'a') document.querySelectorAll('img[data-o]').forEach(i => i.src = i.dataset.o); } catch (e) {}
+

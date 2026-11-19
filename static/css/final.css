@@ -194,3 +194,4 @@
 
 /* 상담 절차 제목 줄만 연회색 띠 */
 .final .c-steps .head { background: var(--paper); padding: 18px 24px; border-radius: 10px; }
+.abc:not(.show) { display: none; }
