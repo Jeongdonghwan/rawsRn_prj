@@ -192,7 +192,5 @@
 @media (prefers-reduced-motion: reduce) { .final .b-intro *, .final .b-intro::before, .final .b-intro *::before, .final .b-intro *::after { transition: none !important; } }
 .final #practice { display: none; }  /* 메인 업무분야 섹션 숨김 (되살리려면 이 줄 삭제) */
 
-/* 상담 절차 + 철학 한 덩어리 연회색 배경 */
-.final .c-steps, .final .b-quote { background: var(--paper); }
-.final .c-steps { padding-bottom: 40px; }
-.final .b-quote { padding: 10px 0 70px; }
+/* 상담 절차 제목 줄만 연회색 띠 */
+.final .c-steps .head { background: var(--paper); padding: 18px 24px; border-radius: 10px; }
