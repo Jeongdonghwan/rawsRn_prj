@@ -85,6 +85,9 @@ P = cut(P, "발자취", hist)
 
 # 5. 남색 띠 삭제 → 상담 절차 + 인용 2단을 벤토와 인사말 사이로 (슬라이더 없음)
 steps = sec(C, "practice").replace('id="practice"', 'id="steps"')
+a = '<a class="more" href="#apply">상담 신청</a></div>'  # 제목 옆 링크 삭제 (수정요청)
+assert steps.count(a) == 1
+steps = steps.replace(a, '</div>')
 quote = '''  <section class="b-quote" id="phil">
     <div class="wrap">
       <div class="mark reveal"><span class="mk">R<i>M</i></span><p><b>로펌 알엠 법률사무소</b>Reliable &amp; Meticulous — 믿을 수 있고, 꼼꼼하게. 의뢰인이 가장 힘든 순간에 곁에 있는 법률사무소가 되겠다는 뜻을 담았습니다.</p></div>
@@ -173,12 +176,11 @@ def newimg(s, pairs):  # (그 줄에만 있는 글자, 새 파일명): 줄의 �
                 break
     assert len(hit) == len(pairs), set(k for k, _ in pairs) - set(hit)
     return NL.join(L)
-P = newimg(P, [("img/s-hall.", "lawyer-doc"), ("img/s-gavel.", "handcuff"), ("img/s-justice.", "property"), ("img/s-family.", "couple"),
-               ("<h3>행정</h3>", "city-dusk"), ("<h3>노무</h3>", "meeting3"),
-               ("img/s-hands-doc.", "pen"), ("img/s-sign.", "consult"), ("img/s-court.", "court"),
+P = newimg(P, [("img/s-gavel.", "criminal"), ("img/s-justice.", "justice-statue"),
+               ("<h3>행정</h3>", "city-dusk"), ("<h3>노무</h3>", "labor-shake"),
+               ("img/s-hands-doc.", "step-suit"), ("img/s-sign.", "step-talk"), ("img/s-court.", "step-shake"),
                (' <img src="img/s-boardroom.', "night-office"),
-               ("img/s-consult.", "statue-gavel"), ("img/s-handshake.", "estate-law"), ("img/s-typing.", "scale-coins"), ('f=가사"><div class="pic">', "lawyer-desk"),
-               ("img/s-newspapers.", "panel"), ("img/s-assembly.", "gavel"), ("상장기업 법률자문 · M&amp;A", "towers"), ("img/s-lecture.", "lawbooks"), ("위례 사무소 상담실", "table")])
+               ("img/s-consult.", "story-key"), ("img/s-handshake.", "story-arch"), ("img/s-typing.", "story-hall"), ('f=가사"><div class="pic">', "story-stairs")])
 
 # 머리·스크립트
 P = P.replace('<link rel="stylesheet" href="css/b.css">', '<link rel="stylesheet" href="css/b.css">\n<link rel="stylesheet" href="css/c.css">\n<link rel="stylesheet" href="css/final.css">')
@@ -186,7 +188,7 @@ P = re.sub(r"<title>.*?</title>", "<title>로펌 알엠 법률사무소 | 성남
 P = P.replace("<body>", '<body class="final" data-bento="b">', 1)  # 분야 카드는 세로형 확정
 rails = """<nav class="abc">
 <span>메뉴</span><a data-k="gnb" data-v="a">A 가운데</a><a data-k="gnb" data-v="b">B 오른쪽</a>
-<span>영상</span><a data-k="vid" data-v="a">기존</a><a data-k="vid" data-v="1">1 낮 도심</a><a data-k="vid" data-v="2">2 밤 도심</a><a data-k="vid" data-v="3">3 유리 빌딩</a>
+<span>영상</span><a data-k="vid" data-v="t">시간대별</a><a data-k="vid" data-v="6">새싹</a><a data-k="vid" data-v="5">노을</a><a data-k="vid" data-v="4">밤하늘</a><a data-k="vid" data-v="a">기존</a><a data-k="vid" data-v="1">1 낮 도심</a><a data-k="vid" data-v="2">2 밤 도심</a><a data-k="vid" data-v="3">3 유리 빌딩</a>
 <span>사진</span><a data-k="img" data-v="a">A 기존</a><a data-k="img" data-v="b">B 새 사진</a>
 <span>강점</span><a data-k="why" data-v="a">A 밝게</a><a data-k="why" data-v="b">B 카드</a>
 </nav>
@@ -196,9 +198,9 @@ const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll
   if (k === 'vid') window.heroVid?.();
   if (k === 'img') document.querySelectorAll('img[data-o]').forEach(i => { i.dataset.n ||= i.getAttribute('src'); i.src = v === 'a' ? i.dataset.o : i.dataset.n; }); };
 document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
-// 확정: 메뉴 B 오른쪽 · 영상 3 유리 빌딩 · 사진 B · 강점 A. 버튼은 숨김, 주소에 ?abc 붙이면 다시 보임
+// 확정: 메뉴 B 오른쪽 · 영상 시간대별(06~14 새싹 / 14~22 노을 / 22~06 밤하늘) · 사진 B · 강점 A. 버튼은 숨김, 주소에 ?abc 붙이면 다시 보임
 const q = new URLSearchParams(location.search); if (q.has('abc')) document.querySelector('.abc').classList.add('show');
-Object.entries({ gnb: 'b', vid: '3', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, q.get(k) || d));
+Object.entries({ gnb: 'b', vid: 't', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, q.get(k) || d));
 </script>
 """ + '''<script>
 document.querySelectorAll('[data-rail-prev],[data-rail-next]').forEach(b => b.onclick = () => {

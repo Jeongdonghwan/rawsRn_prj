@@ -93,15 +93,17 @@ if (form) form.addEventListener('submit', async e => {
 });
 
 
-// 히어로 영상: 기존은 06~17시 낮, 18~05시 밤 (?t=day / ?t=night 로 강제 확인).
-// 영상 시안 1~3 (body[data-vid], 메인 전환 버튼) 이면 그 영상
+// 히어로 영상: 하루를 3분할. 06~14시 새싹(v6), 14~22시 노을 하늘(v5), 22~06시 밤하늘(v4).
+// 확인용: ?vid=4|5|6 (또는 1~3 이전 시안, a 기존 낮/밤 영상)
 window.heroVid = () => {
   const v = document.querySelector('video.bg[data-night]');
   if (!v) return;
-  const c = document.body.dataset.vid, h = new Date().getHours(), q = new URLSearchParams(location.search).get('t');
+  const h = new Date().getHours();
+  let c = document.body.dataset.vid;
+  if (!c || c === 't') c = h >= 22 || h < 6 ? '4' : h < 14 ? '6' : '5';
   v.dataset.p ||= v.getAttribute('poster');
-  v.poster = c && c !== 'a' ? 'img/n/hero-v' + c + '.webp' : v.dataset.p;
-  v.src = c && c !== 'a' ? 'video/hero-v' + c + '.mp4' : (q === 'night' || (q !== 'day' && (h >= 18 || h < 6))) ? v.dataset.night : v.dataset.day;
+  v.poster = c !== 'a' ? 'img/n/hero-v' + c + '.webp' : v.dataset.p;
+  v.src = c !== 'a' ? 'video/hero-v' + c + '.mp4' : (h >= 18 || h < 6) ? v.dataset.night : v.dataset.day;
 };
 heroVid();
 

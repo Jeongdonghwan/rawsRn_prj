@@ -192,6 +192,58 @@
 @media (prefers-reduced-motion: reduce) { .final .b-intro *, .final .b-intro::before, .final .b-intro *::before, .final .b-intro *::after { transition: none !important; } }
 .final #practice { display: none; }  /* 메인 업무분야 섹션 숨김 (되살리려면 이 줄 삭제) */
 
-/* 상담 절차 제목 줄만 연회색 띠 */
-.final .c-steps .head { background: var(--paper); padding: 18px 24px; border-radius: 10px; }
 .abc:not(.show) { display: none; }
+
+/* 클립아트코리아 수정요청 (2026-11) */
+.final { --beige: #f4efe6; }
+/* 업무분야: 세로 더 크게, 분야 이름 눈에 띄게 */
+@media (min-width: 761px) {
+  [data-bento=b] .c-bento .card.bg.row { min-height: clamp(520px, 64vh, 820px); }
+  [data-bento=b] .c-bento .card.bg.half { min-height: clamp(260px, 32vh, 400px); }
+}
+.final .c-bento .card.bg h3 { font-size: clamp(30px, 2.4vw, 40px); font-weight: 900; letter-spacing: -.02em; }
+.final .c-bento .card.bg h3::after { content: ''; display: block; width: 32px; height: 3px; background: var(--red); margin: 10px 0 2px; }
+/* 강점 01~04: 누르거나 올리면 살짝 떠올랐다 내려옴 */
+.f-why li { transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .35s; }
+.f-why li:hover, .f-why li:active { transform: translateY(-8px); box-shadow: 0 14px 30px rgba(20,30,60,.1); background: var(--white); }
+/* 상담 절차 + 철학: 베이지 배경 */
+.final .c-steps, .final .b-quote { background: var(--beige); }
+.final .c-steps { padding-bottom: 40px; }
+.final .b-quote { padding: 10px 0 70px; }
+/* 알엠 소개 띠: 세로 더 */
+.final .b-banner { min-height: clamp(620px, 72vh, 860px); }
+/* 기업 법률자문: 이름 크게, 누르면 눌림 */
+.final .clients li { font-size: 18px; font-weight: 700; padding: 26px 16px; transition: transform .2s, box-shadow .2s, border-color .2s; cursor: default; }
+.final .clients li:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20,30,60,.08); border-color: var(--ink); }
+.final .clients li:active { transform: scale(.97); }
+/* 의뢰인 이야기 카드: 누르면 눌림 */
+.final .c-rev .r { transition: transform .2s, box-shadow .2s; }
+.final .c-rev .r:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(20,30,60,.1); }
+.final .c-rev .r:active { transform: scale(.97); }
+/* 방송·미디어 + 갤러리: 흰 배경 */
+.final #media { background: var(--white); color: var(--ink); }
+.final #media .desc { color: var(--ink2); }
+.final #media .pill { color: var(--ink); border-color: var(--ink); }
+.final #media .pill:hover { background: var(--ink); color: var(--white); }
+.final #media .c-gal .head h2 { color: var(--ink); }
+.final #media .c-gal .head a.more { color: var(--ink2); border-color: var(--line); }
+.final #media .c-gal .head .nav button { color: var(--ink); border-color: var(--line); }
+.final #media .c-gal .head .nav button:hover { background: var(--ink); color: var(--white); }
+.final #media .c-gal .g { border-color: var(--line); }
+/* 상담 문의: 베이지 배경, 흰 카드 */
+.final .consult { background: var(--beige); color: var(--ink); }
+.final .consult .bgimg, .final .consult::before { display: none; }
+.final .consult .sec-head p { color: var(--ink2); }
+.final .consult .c-card { background: var(--white); border-color: var(--line); backdrop-filter: none; transition: transform .2s, box-shadow .2s; }
+.final .consult .c-card:hover { background: var(--white); transform: translateY(-4px); box-shadow: 0 14px 30px rgba(20,30,60,.1); }
+.final .consult .c-card:active { transform: scale(.98); }
+.final .consult .c-card .ico { background: var(--beige); }
+.final .consult .c-card h3 { text-shadow: none; }
+.final .consult .c-card p { color: var(--ink2); }
+@media (max-width: 760px) {
+  .final .b-banner { min-height: 480px; }
+  .final .c-bento .card.bg h3 { font-size: 26px; }
+  .final .clients li { font-size: 15px; padding: 20px 10px; }
+}
+.final #media .chip { border-color: var(--line); }
+.final #media .chip:hover { background: var(--ink); color: var(--white); }
