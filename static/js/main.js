@@ -94,12 +94,13 @@ if (form) form.addEventListener('submit', async e => {
 
 
 // 히어로 영상: 1번 밤하늘(v4) 끝나면 2번 노을 하늘(v5), 다시 1번… 반복
+// 4·5번은 PC 1080p 고화질, 휴대폰(760px 이하)은 가벼운 720p(-m)
 // 확인용: ?vid=4|5 (한 영상만 반복), 1~3 이전 시안, a 기존 낮/밤 영상
 window.heroVid = () => {
   const v = document.querySelector('video.bg[data-night]');
   if (!v) return;
   const h = new Date().getHours(), c = document.body.dataset.vid || 't';
-  const set = n => { v.poster = 'img/n/hero-v' + n + '.webp'; v.src = 'video/hero-v' + n + '.mp4'; v.play().catch(() => {}); };
+  const set = n => { v.poster = 'img/n/hero-v' + n + '.webp'; v.src = 'video/hero-v' + n + (n > 3 && innerWidth <= 760 ? '-m' : '') + '.mp4'; v.play().catch(() => {}); };
   v.dataset.p ||= v.getAttribute('poster');
   v.loop = c !== 't';
   v.onended = c === 't' ? () => set(v.src.includes('hero-v4') ? 5 : 4) : null;
