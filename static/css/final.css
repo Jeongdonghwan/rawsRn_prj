@@ -213,9 +213,9 @@
 /* 알엠 소개 띠: 세로 더 */
 .final .b-banner { min-height: clamp(620px, 72vh, 860px); }
 /* 기업 법률자문: 이름 크게, 누르면 눌림 */
-.final .clients li { font-size: 18px; font-weight: 700; padding: 26px 16px; transition: transform .2s, box-shadow .2s, border-color .2s; cursor: default; }
+.final .clients li { font-size: 21px; font-weight: 800; letter-spacing: -.02em; padding: 30px 16px; transition: transform .15s, box-shadow .2s, border-color .2s, background .15s, color .15s; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
 .final .clients li:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20,30,60,.08); border-color: var(--ink); }
-.final .clients li:active { transform: scale(.97); }
+.final .clients li:active { transform: scale(.95); background: var(--ink); color: var(--white); border-color: var(--ink); box-shadow: none; }
 /* 의뢰인 이야기 카드: 누르면 눌림 */
 .final .c-rev .r { transition: transform .2s, box-shadow .2s; }
 .final .c-rev .r:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(20,30,60,.1); }
@@ -243,7 +243,7 @@
 @media (max-width: 760px) {
   .final .b-banner { min-height: 480px; }
   .final .c-bento .card.bg h3 { font-size: 26px; }
-  .final .clients li { font-size: 15px; padding: 20px 10px; }
+  .final .clients li { font-size: 17px; padding: 22px 10px; }
 }
 .final #media .chip { border-color: var(--line); }
 .final #media .chip:hover { background: var(--ink); color: var(--white); }

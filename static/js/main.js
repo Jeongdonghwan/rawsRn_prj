@@ -108,3 +108,6 @@ window.heroVid = () => {
 heroVid();
 
 
+
+// 아이폰에서 :active(누름 효과) 가 동작하도록
+document.addEventListener("touchstart", () => {}, { passive: true });

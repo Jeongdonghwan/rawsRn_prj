@@ -179,7 +179,6 @@ def newimg(s, pairs):  # (그 줄에만 있는 글자, 새 파일명): 줄의 �
 P = newimg(P, [("img/s-gavel.", "criminal"), ("img/s-justice.", "justice-statue"),
                ("<h3>행정</h3>", "city-dusk"), ("<h3>노무</h3>", "labor-shake"),
                ("img/s-hands-doc.", "step-suit"), ("img/s-sign.", "step-talk"), ("img/s-court.", "step-shake"),
-               (' <img src="img/s-boardroom.', "night-office"),
                ("img/s-consult.", "story-key"), ("img/s-handshake.", "story-arch"), ("img/s-typing.", "story-hall"), ('f=가사"><div class="pic">', "story-stairs")])
 
 # 머리·스크립트
