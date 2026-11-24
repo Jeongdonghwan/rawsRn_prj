@@ -90,7 +90,7 @@ assert steps.count(a) == 1
 steps = steps.replace(a, '</div>')
 quote = '''  <section class="b-quote" id="phil">
     <div class="wrap">
-      <div class="mark reveal"><span class="mk">R<i>M</i></span><p><b>로펌 알엠 법률사무소</b>Reliable &amp; Meticulous — 믿을 수 있고, 꼼꼼하게. 의뢰인이 가장 힘든 순간에 곁에 있는 법률사무소가 되겠다는 뜻을 담았습니다.</p></div>
+      <div class="mark reveal"><span class="mk">R<i>M</i></span><p><b>로펌 알엠 법률사무소</b>Risk &amp; Management — 위험을 먼저 읽고, 끝까지 관리합니다. 의뢰인이 가장 힘든 순간에 곁에 있는 법률사무소가 되겠다는 뜻을 담았습니다.</p></div>
     </div>
   </section>'''
 P = cut(P, "철학", sec(B, "phil"))
