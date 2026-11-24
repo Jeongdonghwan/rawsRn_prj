@@ -237,7 +237,8 @@
 .final .consult .c-card { background: var(--white); border-color: var(--line); backdrop-filter: none; transition: transform .2s, box-shadow .2s; }
 .final .consult .c-card:hover { background: var(--white); transform: translateY(-4px); box-shadow: 0 14px 30px rgba(20,30,60,.1); }
 .final .consult .c-card:active { transform: scale(.98); }
-.final .consult .c-card .ico { background: var(--beige); }
+.final .consult .c-card .ico { background: #8e2a3b; }
+.final .consult .c-card .ico svg { stroke: var(--white); }
 .final .consult .c-card h3 { text-shadow: none; }
 .final .consult .c-card p { color: var(--ink2); }
 @media (max-width: 760px) {
