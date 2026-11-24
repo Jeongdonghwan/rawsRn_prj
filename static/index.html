@@ -331,7 +331,7 @@ fetch('data/cases.json').then(r => r.json()).then(all => {
 </script>
 <nav class="abc">
 <span>메뉴</span><a data-k="gnb" data-v="a">A 가운데</a><a data-k="gnb" data-v="b">B 오른쪽</a>
-<span>영상</span><a data-k="vid" data-v="t">시간대별</a><a data-k="vid" data-v="6">새싹</a><a data-k="vid" data-v="5">노을</a><a data-k="vid" data-v="4">밤하늘</a><a data-k="vid" data-v="a">기존</a><a data-k="vid" data-v="1">1 낮 도심</a><a data-k="vid" data-v="2">2 밤 도심</a><a data-k="vid" data-v="3">3 유리 빌딩</a>
+<span>영상</span><a data-k="vid" data-v="t">1→2 연속</a><a data-k="vid" data-v="4">밤하늘</a><a data-k="vid" data-v="5">노을</a><a data-k="vid" data-v="a">기존</a><a data-k="vid" data-v="1">1 낮 도심</a><a data-k="vid" data-v="2">2 밤 도심</a><a data-k="vid" data-v="3">3 유리 빌딩</a>
 <span>사진</span><a data-k="img" data-v="a">A 기존</a><a data-k="img" data-v="b">B 새 사진</a>
 <span>강점</span><a data-k="why" data-v="a">A 밝게</a><a data-k="why" data-v="b">B 카드</a>
 </nav>
@@ -341,7 +341,7 @@ const pick = (k, v) => { document.body.dataset[k] = v; document.querySelectorAll
   if (k === 'vid') window.heroVid?.();
   if (k === 'img') document.querySelectorAll('img[data-o]').forEach(i => { i.dataset.n ||= i.getAttribute('src'); i.src = v === 'a' ? i.dataset.o : i.dataset.n; }); };
 document.querySelectorAll('.abc a').forEach(a => a.onclick = () => pick(a.dataset.k, a.dataset.v));
-// 확정: 메뉴 B 오른쪽 · 영상 시간대별(06~14 새싹 / 14~22 노을 / 22~06 밤하늘) · 사진 B · 강점 A. 버튼은 숨김, 주소에 ?abc 붙이면 다시 보임
+// 확정: 메뉴 B 오른쪽 · 영상 1 밤하늘 → 2 노을 연속 재생 · 사진 B · 강점 A. 버튼은 숨김, 주소에 ?abc 붙이면 다시 보임
 const q = new URLSearchParams(location.search); if (q.has('abc')) document.querySelector('.abc').classList.add('show');
 Object.entries({ gnb: 'b', vid: 't', img: 'b', why: 'a' }).forEach(([k, d]) => pick(k, q.get(k) || d));
 </script>

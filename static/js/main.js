@@ -93,17 +93,19 @@ if (form) form.addEventListener('submit', async e => {
 });
 
 
-// 히어로 영상: 하루를 3분할. 06~14시 새싹(v6), 14~22시 노을 하늘(v5), 22~06시 밤하늘(v4).
-// 확인용: ?vid=4|5|6 (또는 1~3 이전 시안, a 기존 낮/밤 영상)
+// 히어로 영상: 1번 밤하늘(v4) 끝나면 2번 노을 하늘(v5), 다시 1번… 반복
+// 확인용: ?vid=4|5 (한 영상만 반복), 1~3 이전 시안, a 기존 낮/밤 영상
 window.heroVid = () => {
   const v = document.querySelector('video.bg[data-night]');
   if (!v) return;
-  const h = new Date().getHours();
-  let c = document.body.dataset.vid;
-  if (!c || c === 't') c = h >= 22 || h < 6 ? '4' : h < 14 ? '6' : '5';
+  const h = new Date().getHours(), c = document.body.dataset.vid || 't';
+  const set = n => { v.poster = 'img/n/hero-v' + n + '.webp'; v.src = 'video/hero-v' + n + '.mp4'; v.play().catch(() => {}); };
   v.dataset.p ||= v.getAttribute('poster');
-  v.poster = c !== 'a' ? 'img/n/hero-v' + c + '.webp' : v.dataset.p;
-  v.src = c !== 'a' ? 'video/hero-v' + c + '.mp4' : (h >= 18 || h < 6) ? v.dataset.night : v.dataset.day;
+  v.loop = c !== 't';
+  v.onended = c === 't' ? () => set(v.src.includes('hero-v4') ? 5 : 4) : null;
+  if (c === 't') set(4);
+  else if (c === 'a') { v.poster = v.dataset.p; v.src = (h >= 18 || h < 6) ? v.dataset.night : v.dataset.day; }
+  else set(c);
 };
 heroVid();
 
