@@ -593,3 +593,9 @@
   .pb .x { margin-right: 16px; }
   .pb .fs .subs { grid-template-columns: 1fr 1fr; }
 }
+/* 업무분야 페이지 머리: 베이지 한 덩어리, 아래 목록 영역은 흰 바탕 */
+.pr-hero { background: #f4efe6; }
+.pr-hero .crumb { text-align: left; margin-bottom: 36px; }
+.pr-hero .lab { font-size: 15px; font-weight: 700; letter-spacing: .24em; color: var(--red); }
+.f-areas[data-v] { background: var(--white); padding-top: 50px; }
+.f-areas[data-v] .ctr { margin: 0 0 18px; }

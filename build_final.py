@@ -184,7 +184,6 @@ AREAS = [
 ]
 toggle = "const o=this.parentNode.classList.toggle('open');this.setAttribute('aria-expanded',o);this.firstChild.textContent=o?'접기':'전체 보기'"
 areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">' + NL
-         + '      <div class="head reveal"><small>PRACTICE AREAS</small><h2>업무분야</h2><p>기업부터 개인까지, 분야별 사건을 대표변호사가 직접 맡습니다.</p></div>' + NL
          + '      <nav class="ctr reveal"><span>센터 바로 이동</span>' + "".join(f'<a href="{GK[ko]}/index.html">{ko.replace("소송", "").replace(" 및 이혼", "·이혼")}센터</a>' for en, ko, href, ico, items in AREAS) + '</nav>' + NL
          + '      <div class="box"><div class="grid">' + NL
          + "".join(f'        <div class="ar reveal"><div class="top"><i>{n:02d}</i><div><small>{en}</small><h3>{ko}</h3></div><a class="go" href="{GK[ko]}/index.html" aria-label="{ko} 센터로 이동"><span>센터 보기</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><ul>'
@@ -309,6 +308,16 @@ pr = re.sub(r'<!-- 업무분야 세부 -->.*?<!-- /업무분야 세부 -->' + NL
 a = '<div class="wrap areas">'
 assert pr.count(a) == 1
 pr = pr.replace(a, '<!-- 업무분야 세부 -->' + NL + areas + NL + '<!-- /업무분야 세부 -->' + NL + a)
+# 머리: 예전 '개인 고객' 소개 → 업무분야 소개 한 덩어리 (베이지)
+pr = re.sub(r'<section class="sub-hero[^"]*">.*?</section>', '''<section class="sub-hero pr-hero">
+  <div class="wrap">
+    <div class="crumb">⌂ &nbsp;›&nbsp; <b>업무분야</b></div>
+    <div class="lab">PRACTICE AREAS</div>
+    <h1>업무분야</h1>
+    <p>기업부터 개인까지, 6개 센터의 분야별 사건을 변환봉 대표변호사가 직접 맡습니다.<br>분야를 누르면 진행 절차와 자주 묻는 질문을 볼 수 있습니다.</p>
+  </div>
+</section>''', pr, count=1, flags=re.S)
+pr = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="로펌 알엠 업무분야 - 기업·형사·민사·가사·행정·노무 6개 센터와 세부 분야 28개. 분야별 진행 절차와 자주 묻는 질문, 상담 1644-7702.">', pr, count=1)
 a = '<link rel="stylesheet" href="css/style.css">'
 if 'css/final.css' not in pr: pr = pr.replace(a, a + NL + '<link rel="stylesheet" href="css/final.css">', 1)
 wr("practice.html", pr)
