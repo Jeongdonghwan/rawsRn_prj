@@ -599,3 +599,28 @@
 .pr-hero .lab { font-size: 15px; font-weight: 700; letter-spacing: .24em; color: var(--red); }
 .f-areas[data-v] { background: var(--white); padding-top: 50px; }
 .f-areas[data-v] .ctr { margin: 0 0 18px; }
+
+/* 센터 페이지: 메인 템플릿 위에 센터용 조각만 */
+.center-page .hero .eb { display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: .04em; padding: 7px 16px; border-radius: 999px; background: rgba(209,40,60,.85); margin: 0 0 22px; max-width: none; }
+.center-page .b-intro .lead { font-size: 18px; line-height: 1.85; color: var(--gray); max-width: 820px; margin: 22px auto 0; }
+.final .g-bento .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: none; }
+.final .g-bento .grid.n2, .final .g-bento .grid.n4 { grid-template-columns: repeat(2, 1fr); }
+.final .g-bento .card.bg { min-height: 340px; grid-column: auto; grid-row: auto; }
+.final .g-bento .grid.n2 .card.bg { min-height: 460px; }
+.final .g-bento .card.bg .t { padding: 26px 28px; }
+.final .g-bento .card.bg small { display: block; font-size: 13px; font-weight: 800; letter-spacing: .12em; color: rgba(255,255,255,.75); margin-bottom: 6px; }
+.final .g-bento .card.bg h3 { font-size: clamp(24px, 1.8vw, 30px); }
+.final .g-bento .card.bg p { opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }
+.final .g-bento .card.bg:hover p { opacity: 1; transform: none; }
+.center-page .g-qa { background: var(--white); }
+.center-page .g-qa .sec-head h2 { font-size: clamp(34px, 3.4vw, 48px); }
+.center-page .g-qa .qa { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; align-items: start; }
+.center-page .g-qa details { background: var(--white); }
+.center-page .g-tool { background: var(--white); }
+@media (hover: none) { .final .g-bento .card.bg p { opacity: 1; transform: none; } }
+@media (max-width: 760px) {
+  .final .g-bento .grid, .final .g-bento .grid.n2, .final .g-bento .grid.n4 { grid-template-columns: 1fr; }
+  .final .g-bento .card.bg, .final .g-bento .grid.n2 .card.bg { min-height: 240px; }
+  .center-page .g-qa .qa { grid-template-columns: 1fr; }
+  .center-page .b-intro .lead { font-size: 16px; }
+}
