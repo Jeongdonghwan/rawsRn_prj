@@ -300,3 +300,105 @@
   .f-areas .box.open .more svg { transform: rotate(180deg); }
 }
 
+/* 업무분야 상세 페이지 (practice-*.html) */
+.field-page { --beige: #f4efe6; --navy: #16223f; }
+.f-hero { background: var(--beige); padding: 70px 0 56px; }
+.f-hero .crumb { margin-bottom: 40px; }
+.f-hero .crumb a { color: var(--gray); }
+.f-hero .crumb a:hover { color: var(--ink); }
+.f-hero .cat { font-size: 14px; font-weight: 700; letter-spacing: .12em; color: var(--red); margin: 0; }
+.f-hero h1 { margin-top: 12px; }
+.f-hero h1 .hero-sub { display: block; font-size: .46em; font-weight: 600; color: var(--ink2); letter-spacing: -.01em; margin-top: 12px; }
+.f-hero .lead { font-size: 19px; line-height: 1.75; color: var(--ink2); max-width: 860px; margin-top: 22px; }
+.f-hero .upd { font-size: 14px; color: var(--gray); margin-top: 18px; }
+.f-body { display: grid; grid-template-columns: 300px 1fr; gap: 64px; align-items: start; padding: 70px 0 90px; }
+.f-side { position: sticky; top: 84px; display: grid; gap: 18px; }
+.f-side .toc { border: 1px solid var(--line); border-radius: 14px; padding: 22px 20px; }
+.f-side .toc b { display: block; font-size: 15px; font-weight: 800; padding-bottom: 12px; margin-bottom: 8px; border-bottom: 2px solid var(--navy); }
+.f-side .toc ol { list-style: none; }
+.f-side .toc a { display: flex; gap: 10px; padding: 8px 4px; font-size: 14px; line-height: 1.45; color: var(--ink2); border-radius: 6px; transition: background .2s, color .2s; }
+.f-side .toc a:hover { background: #f6f3ee; color: var(--red); }
+.f-side .toc i { flex: none; font-style: normal; font-weight: 800; color: var(--red); }
+.f-side .now { background: var(--navy); color: var(--white); border-radius: 14px; padding: 24px 22px; }
+.f-side .now h3 { font-size: 18px; font-weight: 800; }
+.f-side .now p { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.78); margin: 10px 0 16px; }
+.f-side .now a { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; margin-top: 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); font-size: 15px; font-weight: 700; transition: background .2s; }
+.f-side .now a.tel { background: var(--red); border-color: var(--red); font-size: 18px; }
+.f-side .now a:hover { background: rgba(255,255,255,.12); }
+.f-side .now a.tel:hover { background: #b51f31; }
+.f-side svg, .f-book svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.f-main h2 { font-size: clamp(24px, 1.9vw, 30px); font-weight: 800; letter-spacing: -.02em; line-height: 1.4; }
+.f-main p { font-size: 18px; line-height: 1.9; color: var(--ink2); }
+.f-main p b { color: var(--ink); background: linear-gradient(transparent 62%, rgba(209,40,60,.16) 0); }
+.f-main .sum { background: var(--beige); border-radius: 18px; padding: 38px 40px; }
+.f-main .sum h2 { display: flex; align-items: center; gap: 10px; }
+.f-main .sum h2::before { content: ''; flex: none; width: 6px; height: 26px; border-radius: 3px; background: var(--red); }
+.f-main .sum p { margin-top: 16px; }
+.f-main .sum dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+.f-main .sum dl div { background: var(--white); border-radius: 12px; padding: 16px 18px; }
+.f-main .sum dt { font-size: 13px; font-weight: 700; color: var(--red); letter-spacing: .02em; }
+.f-main .sum dd { font-size: 16px; font-weight: 600; color: var(--ink); margin-top: 4px; line-height: 1.5; }
+.f-main .fs { padding-top: 56px; scroll-margin-top: 90px; }
+.f-main .fs h2 { display: flex; align-items: baseline; gap: 14px; padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+.f-main .fs h2 i { flex: none; font-style: normal; font-size: 15px; font-weight: 800; color: var(--white); background: var(--navy); border-radius: 8px; padding: 5px 9px; transform: translateY(-3px); }
+.f-main .faq { padding-top: 64px; scroll-margin-top: 90px; }
+.f-main .faq h2 { margin-bottom: 18px; }
+.f-main details { border: 1px solid var(--line); border-radius: 12px; margin-top: 10px; overflow: hidden; }
+.f-main details[open] { border-color: var(--navy); }
+.f-main summary { position: relative; list-style: none; cursor: pointer; padding: 20px 56px 20px 54px; font-size: 18px; font-weight: 700; }
+.f-main summary::-webkit-details-marker { display: none; }
+.f-main summary::before { content: 'Q'; position: absolute; left: 22px; top: 19px; font-weight: 900; color: var(--red); }
+.f-main summary::after { content: '+'; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); font-size: 24px; font-weight: 300; color: var(--gray); transition: transform .3s; }
+.f-main details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.f-main details p { padding: 0 24px 22px 54px; font-size: 17px; }
+.f-str { position: relative; overflow: hidden; padding: 80px 0; color: var(--white); background: radial-gradient(circle at 85% 20%, rgba(209,40,60,.18), transparent 40%), linear-gradient(135deg, #1b2a4e, #0d1628); }
+.f-str h2 { font-size: clamp(26px, 2.2vw, 36px); font-weight: 800; }
+.f-str ul { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 34px; }
+.f-str li { border: 1px solid rgba(255,255,255,.16); border-radius: 16px; padding: 28px 26px; background: rgba(255,255,255,.05); }
+.f-str li b { display: block; font-size: 20px; font-weight: 800; }
+.f-str li b::before { content: ''; display: block; width: 28px; height: 2px; background: var(--red); margin-bottom: 16px; }
+.f-str li span { display: block; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,.75); margin-top: 10px; }
+.f-str .more { display: inline-block; margin-top: 28px; font-size: 15px; font-weight: 700; color: rgba(255,255,255,.85); border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 2px; }
+.f-book { padding: 80px 0; text-align: center; background: var(--beige); }
+.f-book h2 { font-size: clamp(26px, 2.2vw, 36px); font-weight: 800; letter-spacing: -.02em; }
+.f-book p { font-size: 17px; color: var(--ink2); margin-top: 12px; }
+.f-book .btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin: 34px auto 0; }
+.f-book .btns a { display: grid; justify-items: center; gap: 6px; padding: 28px 16px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.f-book .btns a:hover { transform: translateY(-4px); border-color: var(--navy); box-shadow: 0 14px 30px rgba(20,30,60,.1); }
+.f-book .btns a:active { transform: scale(.97); }
+.f-book .btns svg { width: 24px; height: 24px; padding: 14px; border-radius: 50%; background: #8e2a3b; stroke: var(--white); box-sizing: content-box; }
+.f-book .btns b { font-size: 18px; font-weight: 800; margin-top: 6px; }
+.f-book .btns small { font-size: 14px; color: var(--gray); }
+.f-rel { padding: 80px 0 100px; }
+.f-rel .blk + .blk { margin-top: 50px; }
+.f-rel h2 { font-size: 24px; font-weight: 800; padding-bottom: 14px; border-bottom: 2px solid var(--navy); }
+.f-rel .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 18px; }
+.f-rel .cards a { position: relative; display: block; padding: 20px 46px 20px 20px; border: 1px solid var(--line); border-radius: 12px; font-size: 17px; font-weight: 700; transition: border-color .2s, color .2s, transform .15s; }
+.f-rel .cards a::after { content: '\2192'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--gray); transition: right .2s, color .2s; }
+.f-rel .cards a:hover { border-color: var(--navy); color: var(--red); }
+.f-rel .cards a:hover::after { right: 14px; color: var(--red); }
+.f-rel .cards a:active { transform: scale(.98); }
+.f-rel .cards small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--gray); margin-bottom: 4px; }
+@media (max-width: 1100px) {
+  .f-body { grid-template-columns: 1fr; gap: 30px; }
+  .f-side { position: static; grid-template-columns: 1fr 1fr; }
+  .f-rel .cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .f-hero { padding: 36px 0 34px; }
+  .f-hero .crumb { text-align: left; margin-bottom: 22px; font-size: 13px; }
+  .f-hero .lead { font-size: 16px; }
+  .f-body { padding: 36px 0 60px; }
+  .f-side { grid-template-columns: 1fr; }
+  .f-main p { font-size: 16px; }
+  .f-main .sum { padding: 26px 20px; }
+  .f-main .sum dl { grid-template-columns: 1fr; }
+  .f-main .fs { padding-top: 40px; }
+  .f-main summary { font-size: 16px; padding: 18px 44px 18px 44px; }
+  .f-main summary::before { left: 16px; top: 17px; }
+  .f-main details p { padding: 0 18px 18px 44px; font-size: 15px; }
+  .f-str, .f-book { padding: 56px 0; }
+  .f-str ul, .f-book .btns { grid-template-columns: 1fr; }
+  .f-rel { padding: 56px 0 70px; }
+  .f-rel .cards { grid-template-columns: 1fr; }
+}
