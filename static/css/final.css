@@ -248,3 +248,55 @@
 }
 .final #media .chip { border-color: var(--line); }
 .final #media .chip:hover { background: var(--ink); color: var(--white); }
+
+/* 업무분야 큰 카드(기업) 설명 */
+.final .c-bento .big .t p { font-size: 16px; line-height: 1.7; color: rgba(255,255,255,.85); margin-top: 14px; max-width: 420px; }
+/* 업무분야 세부 목록 */
+.f-areas { padding: 90px 0 100px; background: linear-gradient(180deg, var(--beige) 0, var(--beige) 300px, var(--white) 300px); }
+.f-areas .head { text-align: center; margin-bottom: 44px; }
+.f-areas .head small { font-size: 13px; font-weight: 700; letter-spacing: .24em; color: var(--red); }
+.f-areas .head h2 { font-size: clamp(30px, 2.6vw, 42px); font-weight: 800; letter-spacing: -.02em; margin-top: 10px; }
+.f-areas .head p { font-size: 17px; color: var(--gray); margin-top: 12px; }
+.f-areas .box { position: relative; }
+.f-areas .grid { columns: 3; column-gap: 22px; }
+.f-areas .ar { break-inside: avoid; margin-bottom: 22px; }
+.f-areas .more { display: none !important; }
+.f-areas .ar { background: var(--white); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(20,30,60,.06); transition: transform .3s var(--ease), box-shadow .3s; }
+.f-areas .ar:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(20,30,60,.12); }
+.f-areas .top { position: relative; overflow: hidden; padding: 26px 28px 24px; color: var(--white); background: linear-gradient(135deg, #1b2a4e, #0f1a33); }
+.f-areas .top::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 2px, transparent 2px 14px); }
+.f-areas .top::after { content: ''; position: absolute; left: 28px; bottom: 0; width: 36px; height: 3px; background: var(--red); transition: width .4s var(--ease); }
+.f-areas .ar:hover .top::after { width: calc(100% - 56px); }
+.f-areas .top small { position: relative; font-size: 12px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.6); }
+.f-areas .top h3 { position: relative; font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin-top: 6px; }
+.f-areas .top i { position: absolute; right: 22px; top: 8px; font-style: normal; font-size: 64px; font-weight: 800; line-height: 1; color: rgba(255,255,255,.07); }
+.f-areas .top svg { position: absolute; right: 26px; bottom: 22px; width: 30px; height: 30px; fill: none; stroke: rgba(255,255,255,.55); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.f-areas ul { list-style: none; padding: 6px 0; }
+.f-areas li + li { border-top: 1px solid var(--line); }
+.f-areas li a { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 15px 28px; font-size: 16px; font-weight: 500; color: var(--ink); transition: color .2s, background .2s, padding .25s; }
+.f-areas li a::before { content: ''; position: absolute; left: 0; top: 50%; width: 3px; height: 0; background: var(--red); transform: translateY(-50%); transition: height .25s; }
+.f-areas li a:hover { color: var(--red); background: #faf7f2; padding-left: 34px; }
+.f-areas li a:hover::before { height: 60%; }
+.f-areas li a:active { background: #f1ebe1; }
+.f-areas li b { position: relative; flex: none; width: 22px; height: 22px; border: 1px solid var(--line); border-radius: 50%; transition: transform .3s var(--ease), background .2s, border-color .2s; }
+.f-areas li b::before, .f-areas li b::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9px; height: 1.5px; background: var(--gray); transform: translate(-50%, -50%); }
+.f-areas li b::after { transform: translate(-50%, -50%) rotate(90deg); }
+.f-areas li a:hover b { transform: rotate(90deg); background: var(--red); border-color: var(--red); }
+.f-areas li a:hover b::before, .f-areas li a:hover b::after { background: var(--white); }
+.f-areas .box .more { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; margin: 22px auto 0; padding: 10px 22px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); font-size: 14px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.f-areas .more svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: transform .3s; }
+.f-areas .more:hover { border-color: var(--ink); }
+.f-areas .box.open .more svg { transform: rotate(180deg); }
+@media (max-width: 1100px) { .f-areas .grid { columns: 2; } }
+@media (max-width: 760px) {
+  .f-areas { padding: 60px 0 70px; }
+  .f-areas .grid { columns: auto; display: block; max-height: 1150px; overflow: hidden; transition: max-height .6s var(--ease); }
+  .f-areas .ar { margin-bottom: 14px; }
+  .f-areas .box.open .grid { max-height: 4000px; }
+  .f-areas .box:not(.open)::after { content: ''; position: absolute; left: 0; right: 0; bottom: 50px; height: 140px; background: linear-gradient(180deg, rgba(255,255,255,0), #fff 85%); pointer-events: none; }
+  .f-areas .box .more { display: flex !important; }
+  .f-areas .top { padding: 22px 22px 20px; }
+  .f-areas .top h3 { font-size: 22px; }
+  .f-areas li a { padding: 14px 22px; font-size: 15px; }
+}
+

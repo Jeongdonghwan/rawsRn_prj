@@ -146,6 +146,42 @@ a = NL + NL + '  <!-- 상담 절차 -->' + NL
 assert P.count(a) == 1
 P = P.replace(a, NL + NL + '  <!-- 강점 -->' + NL + why + a)
 
+# 업무분야 큰 카드: 알엠 이야기 → 기업
+a = '<div class="t"><small>알엠 이야기</small><h3>사무장이 아닌 변호사가<br>직접 듣고 직접 변론합니다</h3></div>'
+assert P.count(a) == 1
+P = P.replace(a, '<div class="t"><small>CORPORATE LAW</small><h3>기업</h3><p>상장기업 법률자문과 M&amp;A, 공정거래, 기업회생까지. 분쟁이 되기 전에 위험을 먼저 읽고, 소송이 되면 대표변호사가 직접 변론합니다.</p></div>')
+a = '<a class="big reveal" href="consult.html">'
+assert P.count(a) == 1
+P = P.replace(a, '<a class="big reveal" href="#areas">')
+
+# 업무분야 세부 목록 (벤토 바로 아래). 항목은 의뢰인 레퍼런스 그대로
+AREAS = [
+    ("CORPORATE LAW", "기업소송", "practice.html", "M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1",
+     ["기업일반", "국제법무·중재", "경영법무컨설팅", "공정거래", "기업회생·파산·M&amp;A", "금융·자본시장", "AI·데이터인텔리전스", "지식재산권", "엔터테인먼트·스포츠", "의료·바이오·헬스케어", "방위산업"]),
+    ("CRIMINAL LAW", "형사소송", "practice.html#criminal", "M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0zM8 21h8",
+     ["형사", "기업형사·화이트칼라범죄", "성범죄", "음주·교통사고", "마약", "특별수행본부"]),
+    ("CIVIL LAW", "민사소송", "practice.html#civil", "M6 3h9l4 4v14H6zM15 3v4h4M9 12h6M9 16h6",
+     ["민사", "건설·부동산"]),
+    ("FAMILY &amp; DIVORCE LAW", "가사 및 이혼소송", "practice.html#family", "M3 11l9-7 9 7M5 10v10h14V10M10 20v-5h4v5",
+     ["가사", "이혼", "상속"]),
+    ("ADMINISTRATIVE LAW", "행정소송", "practice.html", "M3 21h18M4 10h16M12 3l9 5H3zM6 10v8M10 10v8M14 10v8M18 10v8",
+     ["헌법·행정·규제개혁", "국제조세·관세", "학교폭력대응", "외국인소송"]),
+    ("LABOR &amp; EMPLOYMENT LAW", "노무소송", "practice.html", "M4 14a8 8 0 0 1 16 0zM2 14h20M12 6V4M9 18h6",
+     ["노동·산재", "중대재해"]),
+]
+toggle = "const o=this.parentNode.classList.toggle('open');this.setAttribute('aria-expanded',o);this.firstChild.textContent=o?'접기':'전체 보기'"
+areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">' + NL
+         + '      <div class="head reveal"><small>PRACTICE AREAS</small><h2>업무분야</h2><p>기업부터 개인까지, 분야별 사건을 대표변호사가 직접 맡습니다.</p></div>' + NL
+         + '      <div class="box"><div class="grid">' + NL
+         + "".join(f'        <div class="ar reveal"><div class="top"><small>{en}</small><h3>{ko}</h3><i>{n:02d}</i><svg viewBox="0 0 24 24"><path d="{ico}"/></svg></div><ul>'
+                   + "".join(f'<li><a href="{href}">{it}<b></b></a></li>' for it in items) + '</ul></div>' + NL
+                   for n, (en, ko, href, ico, items) in enumerate(AREAS, 1))
+         + f'      </div><button class="more" type="button" aria-expanded="false" onclick="{toggle}"><span>전체 보기</span><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>' + NL
+         + '    </div>' + NL + '  </section>')
+a = NL + NL + '  <!-- 강점 -->' + NL
+assert P.count(a) == 1
+P = P.replace(a, NL + NL + '  <!-- 업무분야 세부 -->' + NL + areas + a)
+
 # 배너 사진 교체, 방송·미디어 사진 자리에 유튜브
 a = '<img src="img/s-skyline.webp" alt="" loading="lazy">'
 assert P.count(a) == 1
