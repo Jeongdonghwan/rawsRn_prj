@@ -502,18 +502,52 @@ STORY = ["n/story-key", "n/story-arch", "n/story-hall", "n/story-stairs"]
 def sect(html_, cls):  # 메인에서 섹션 하나 그대로
     a = html_.index(f'<section class="{cls}"'); return html_[a:html_.index("</section>", a) + 10]
 
+STEPIMG = ["n/step-talk", "n/lawyer-desk", "n/court", "n/step-shake"]
+AREA_OF = {"criminal": "형사", "civil": "민사", "family": "가사"}  # 상담 폼 분야 (app.py AREAS). 나머지 센터는 기타
+PERSON = '<svg viewBox="0 0 48 48"><circle cx="22" cy="15" r="9"/><path d="M5 43c0-10 7-16 17-16s17 6 17 16z"/><circle class="ck" cx="37" cy="33" r="8"/><path class="cm" d="M33 33l3 3 5-6"/></svg>'
+# 센터 페이지 스크립트: 단계 탭(5초마다 자동 넘김, 누르면 멈춤) · 사례 유형 필터 · 모든 분야 탭
+GJS = """<script>(()=>{const $=(s,r)=>[...r.querySelectorAll(s)];
+const st=document.querySelector('.g-stage');let n=0;const go=i=>{n=i;$('.tabs button',st).forEach((b,j)=>b.classList.toggle('on',j===i));$('.pane',st).forEach((p,j)=>p.classList.toggle('on',j===i))};
+const auto=setInterval(()=>go((n+1)%4),5000);$('.tabs button',st).forEach((b,i)=>b.onclick=()=>{clearInterval(auto);go(i)});
+const cs=document.getElementById('cases');$('.g-chips button',cs).forEach(b=>b.onclick=()=>{$('.g-chips button',cs).forEach(x=>x.classList.toggle('on',x===b));$('.case',cs).forEach(c=>c.hidden=!!b.dataset.t&&c.dataset.t!==b.dataset.t)});
+const al=document.querySelector('.g-all');$('.gl button',al).forEach((b,i)=>b.onclick=()=>{$('.gl button',al).forEach(x=>x.classList.toggle('on',x===b));$('.gp',al).forEach((p,j)=>p.classList.toggle('on',j===i))});
+})();</script>"""
+
 def gpage(k):
     d = GROUPS_D[k]; gi = GKEY.index(k); en, gko, slugs = GROUPS[gi]
     items = slugs + EXTRA.get(k, [])
-    nm = amp(d["center"]).replace("알엠 ", "")
+    nm = amp(d["center"]).replace("알엠 ", ""); name = amp(d["name"])
+    arrow = '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
     tabs = "".join(f'<a href="../{x}/index.html"{" class=on" if x == k else ""}>{GROUPS_D[x]["name"]}</a>' for x in GKEY)
     h1 = "".join(f'<span class="ln"><span>{amp(x)}</span></span>' for x in d["hero"]["h1"].split("<br>"))
     dl = lambda i, n: " d1" if i % n == 1 else " d2" if i % n == 2 else ""
+    S = d["steps"]["items"]
+    stabs = "".join(f'<button type="button"{" class=on" if i == 0 else ""}><i>{i + 1:02d}</i>{amp(x["t"])}</button>' for i, x in enumerate(S))
+    panes = "".join(f'<div class="pane{" on" if i == 0 else ""}"><div class="ph"><img src="img/{STEPIMG[i]}.webp" alt="" loading="lazy"></div><div class="tx"><small>STEP {i + 1:02d}</small><h3>{amp(x["t"])}</h3><p>{amp(x["p"])}</p><a class="pill dark arrow" href="#form">이 단계 상담하기</a></div></div>' for i, x in enumerate(S))
+    ask = "".join(f'<details class="reveal{dl(i, 3)}" name="ask"><summary><svg viewBox="0 0 24 24"><path d="{AREAS[i][3]}"/></svg>{amp(x["q"])}</summary><p>{amp(x["a"])}</p></details>' for i, x in enumerate(d["ask"]["items"]))
+    faq = "".join(f'<details class="reveal"><summary>{amp(q["q"])}</summary><p>{amp(q["a"])}</p></details>' for q in d["faq"])
+    tags = list(dict.fromkeys(c["tag"] for c in d["cases"]))
+    chips = '<button type="button" class="on" data-t="">전체</button>' + "".join(f'<button type="button" data-t="{amp(t)}">{amp(t)}</button>' for t in tags)
+    cases = "".join(f'<a class="case reveal{dl(i, 2)}" data-t="{amp(c["tag"])}" href="#form"><div class="meta"><span class="area">{amp(c["tag"])}</span><time>예시</time></div><h3>{amp(c["title"])}</h3><p>{amp(c["summary"])}</p><div class="foot"><b>결과 · {amp(c["result"])}</b></div></a>' for i, c in enumerate(d["cases"]))
     cards = "".join(f'<a class="card bg reveal{dl(i, 3)}" href="practice-{x}.html"><img src="img/{ITIMG[x]}.webp" alt="" loading="lazy"><div class="t"><small>{i + 1:02d}</small><h3>{amp(FBY[x]["item"])}</h3><p>{amp(FBY[x]["h1sub"])}</p></div></a>' for i, x in enumerate(items))
-    steps = "".join(f'<li class="reveal"><i>{i:02d}</i><h3>{amp(x["t"])}</h3><p>{amp(x["p"])}</p></li>' for i, x in enumerate(d["steps"]["items"], 1))
-    ask = "".join(f'<details class="reveal"><summary>{amp(x["q"])}</summary><p>{amp(x["a"])}</p></details>' for x in d["ask"]["items"] + d["faq"])
-    cases = "".join(f'<a class="case reveal{dl(i, 2)}" href="#consult"><div class="meta"><span class="area">{amp(c["tag"])}</span><time>예시</time></div><h3>{amp(c["title"])}</h3><p>{amp(c["summary"])}</p><div class="foot"><b>결과 · {amp(c["result"])}</b></div></a>' for i, c in enumerate(d["cases"]))
-    revs = "".join(f'<a class="r reveal{dl(i, 2)}" href="#consult"><div class="pic"><img src="img/{STORY[(i + gi) % 4]}.webp" alt="" loading="lazy"></div><div class="body"><h3>{amp(r["title"])}</h3><p>{amp(r["text"])}</p><div class="star">★★★★★<small>{amp(r["tag"])} · {amp(r["name"])}</small></div></div></a>' for i, r in enumerate(d["reviews"]))
+    rv = lambda r: f'<article><div class="av">{PERSON}<span>★★★★★</span></div><div><em>{amp(r["tag"])}</em><h3>{amp(r["title"])}</h3><p>{amp(r["name"])} 의뢰인</p></div></article>'
+    R1 = "".join(rv(r) for r in d["reviews"]); R2 = "".join(rv(r) for r in d["reviews"][2:] + d["reviews"][:2])
+    allg = "".join(f'<button type="button"{" class=on" if x == k else ""}>{GROUPS_D[x]["name"]}{arrow}</button>' for x in GKEY)
+    allp = "".join(f'<div class="gp{" on" if x == k else ""}">' + "".join(f'<a href="practice-{sl}.html">{amp(FBY[sl]["item"])}{arrow}</a>' for sl in GROUPS[i][2])
+                   + f'<a class="ctr" href="{x}/index.html">{GROUPS_D[x]["name"]} 센터 바로가기{arrow}</a></div>' for i, x in enumerate(GKEY))
+    trust = "".join(f'<li class="reveal{dl(i, 3)}"><div class="top"><span>알엠의 <b>3가지 약속</b></span><i>{n}</i></div><h3>{a}</h3><small>{b}</small><p>{c}</p></li>' for i, (n, a, b, c) in enumerate([
+        ("Ⅰ", "대표변호사 직접 수행", "Direct Counsel", "상담부터 서면 작성, 법정 출석까지 사무장이 아닌 대표변호사가 맡습니다."),
+        ("Ⅱ", "비용·범위 서면 안내", "Written Estimate", "수임 전에 예상 비용과 업무 범위를 글로 먼저 안내합니다."),
+        ("Ⅲ", "단계마다 바로 보고", "Progress Report", "기일과 서면 제출 같은 주요 단계를 의뢰인께 바로 알려드립니다.")]))
+    # 상단 메뉴 5개 + 올리면 펼쳐지는 하위 메뉴 (main.js 가 열 위치를 메뉴 글자에 맞춤)
+    M = [("센터 소개", "#intro", [("센터 소개", "#intro"), ("단계별 대응", "#why"), ("알엠의 3가지 약속", "#trust"), ("오시는 길", "#location"), ("알엠 홈", "./")]),
+         ("업무사례", "#cases", [(f"{name} 업무사례", "#cases"), ("의뢰인 후기", "#reviews"), ("상담 전 확인사항", "#ask"), ("전체 사례", "cases.html")]),
+         ("업무분야", "#areas", [(amp(FBY[x]["item"]), f"practice-{x}.html") for x in items[:5]] + [("모든 분야 보기", "#all")]),
+         ("대표변호사", "#attorney", [("변환봉 변호사", "#attorney"), ("주요 경력", "profile.html"), ("방송 · 미디어", "#media")]),
+         ("소식·자료", "news.html", [("언론보도", "news.html?t=press"), ("공지사항", "news.html?t=notice"), ("법률정보", "news.html?t=column")])]
+    menu = '<nav class="menu">' + "".join(f'<a href="{u}">{t}</a>' for t, u, _ in M) + '</nav>'
+    mega = '<div class="wrap cols">' + "".join("<ul>" + "".join(f'<li><a href="{u}">{t}</a></li>' for t, u in sub) + "</ul>" for _, _, sub in M) + '</div>'
+    allm = '<div class="wrap cols">' + "".join(f"<div><h3>{t}</h3><ul>" + "".join(f'<li><a href="{u}">{t2}</a></li>' for t2, u in sub) + "</ul></div>" for t, _, sub in M[:4]) + '</div>'
     ld = [{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": text(q["q"]), "acceptedAnswer": {"@type": "Answer", "text": text(q["a"])}} for q in d["faq"]]},
           {"@context": "https://schema.org", "@type": "LegalService", "name": "로펌 알엠 법률사무소 " + text(d["center"]), "telephone": "1644-7702",
            "address": {"@type": "PostalAddress", "streetAddress": "위례광장로 322, 212호", "addressLocality": "성남시 수정구", "addressRegion": "경기도", "addressCountry": "KR"}}]
@@ -525,7 +559,9 @@ def gpage(k):
     h = h.replace("</head>", "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in ld) + "</head>")
     h = h.replace('<body class="final"', '<body class="final center-page"')
     h = h.replace('<span class="ko">로펌 알엠 법률사무소<small>LAW FIRM RM</small></span>', f'<span class="ko">로펌 알엠 {nm}<small>{d["en"]}</small></span>', 1)
-    h = re.sub(r'<nav class="menu">.*?</nav>', '<nav class="menu"><a href="#intro">센터 소개</a><a href="#areas">업무분야</a><a href="#cases">업무사례</a><a href="#consult">상담 문의</a><a href="./">알엠 홈</a></nav>', h, count=1, flags=re.S)
+    for pat, rep in [(r'<nav class="menu">.*?</nav>', menu), (r'<div class="wrap cols">.*?</div>', mega), (r'(<div id="allmenu".*?</button>\s*)<div class="wrap cols">.*?</div>\s*</div>', r'\1' + allm)]:
+        h, n = re.subn(pat, lambda m, rep=rep: m.expand(rep) if "\\1" in rep else rep, h, count=1, flags=re.S)
+        assert n == 1, pat
     t = P[P.index("</main>"):]
     t = re.sub(r"<script>\n// 메인: 최신 사례.*?</script>\n", "", t, flags=re.S)
     body = f"""<main>
@@ -535,7 +571,7 @@ def gpage(k):
       <p class="eb reveal">{amp(d["hero"]["eyebrow"])}</p>
       <h1>{h1}</h1>
       <p class="reveal d1">{amp(d["hero"]["sub"])}</p>
-      <div class="cta reveal d2"><a href="consult.html" class="pill glow">온라인으로 상담을 신청해보세요 ↗</a><a href="tel:16447702" class="pill" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.7)">전화 상담 1644-7702</a></div>
+      <div class="cta reveal d2"><a href="#form" class="pill glow">온라인으로 상담을 신청해보세요 ↗</a><a href="tel:16447702" class="pill" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.7)">전화 상담 1644-7702</a></div>
     </div>
   </section>
   <nav class="g-tabs"><div class="wrap"><span>센터 바로 이동</span>{tabs}</div></nav>
@@ -548,51 +584,83 @@ def gpage(k):
     </div>
   </section>
 
-  <section class="c-bento g-bento" id="areas"><div class="wrap">
-    <div class="grid n{len(items)}">{cards}</div>
+  <section class="g-stage" id="why"><div class="wrap">
+    <div class="g-h reveal"><p>단계별 체계적 대응</p><h2>{amp(d["steps"]["h2"])}</h2></div>
+    <div class="tabs reveal">{stabs}</div>
+    <div class="panes reveal">{panes}</div>
   </div></section>
 
-  <section class="f-why" id="why">
-    <div class="wrap">
-      <div class="l reveal"><small>PROCESS</small><h2>{amp(d["steps"]["h2"])}</h2><p>사건의 단계마다 대표변호사가 직접 판단하고 움직입니다. 지금 어느 단계에 있는지부터 함께 확인합니다.</p></div>
-      <ol>{steps}</ol>
-    </div>
-  </section>
-
-  {sect(P, "c-steps")}
-
-  {TOOLS.get(k, "")}
-
-  <section class="b-banner g-banner">
-    <img src="img/{BANNER[k]}.webp" alt="" loading="lazy">
-    <div class="wrap">
-      <div class="lab reveal">{nm}</div>
-      <h2 class="reveal d1">상담부터 법정까지<br>대표변호사가 직접 맡습니다</h2>
-      <p class="reveal d2">사무장이 아닌 대표변호사가 사건을 처음부터 듣고, 예상 비용과 범위를 서면으로 먼저 안내합니다. 기일과 서면 제출 같은 주요 단계는 바로 알려드립니다.</p>
-    </div>
-  </section>
-
-  <section class="sec g-qa" id="ask"><div class="wrap f-main">
-    <div class="sec-head reveal"><h2>{amp(d["ask"]["h2"])}</h2><p>상담 전에 가장 많이 듣는 걱정에 먼저 답합니다</p></div>
-    <div class="qa">{ask}</div>
+  <section class="g-ask2" id="ask"><div class="wrap">
+    <div class="g-h c reveal"><h2>{amp(d["ask"]["h2"])}</h2><p>많은 분들이 상담에서 묻는 질문을 대표변호사가 미리 답합니다</p></div>
+    <div class="boxes">{ask}</div>
+    <div class="f-main faq2"><h3 class="reveal">{name} 자주 묻는 질문</h3>{faq}</div>
   </div></section>
 
   <section class="sec cases-home" id="cases">
     <div class="wrap">
-      <div class="sec-head reveal"><div class="row"><div><h2>{amp(d["name"])} 업무사례</h2><p>사건 유형별 진행 사례 (예시 문구)</p></div><a class="pill sm arrow" href="cases.html">사례 더보기</a></div></div>
+      <div class="sec-head reveal"><div class="row"><div><h2>{name} 업무사례</h2><p>사건 유형별 진행 사례 (예시 문구)</p></div><a class="pill sm arrow" href="cases.html">사례 더보기</a></div></div>
+      <div class="g-chips reveal">{chips}</div>
       <div class="cases">{cases}</div>
-      <div class="c-rev sub">
-        <div class="head"><h2>의뢰인 이야기</h2><p>직접 상담하고 진행한 분들의 말 (예시 문구)</p></div>
-        <div class="inner">{revs}</div>
-      </div>
     </div>
   </section>
 
+  <section class="c-bento g-bento" id="areas"><div class="wrap">
+    <div class="g-h reveal"><p>유형에 따라 대응 전략은 달라집니다</p><h2>{name} 세부 대응분야</h2></div>
+    <div class="grid n{len(items)}">{cards}</div>
+  </div></section>
+
+  <section class="g-atty" id="attorney"><div class="wrap">
+    <div class="ph reveal"><img src="img/attorney.webp" alt="변환봉 대표변호사" loading="lazy"></div>
+    <div class="tx reveal d1"><p>당신 곁을 지킬 한 사람</p><h2>대표변호사 <b>변환봉</b></h2>
+      <ul><li>사법시험 합격 · 사법연수원 수료</li><li>연세대학교 법학과</li><li>前 서울지방변호사회 사무총장</li><li>前 서강대 · 아주대 법학전문대학원 출강</li><li>코스피 · 코스닥 상장기업 법률자문 및 M&amp;A 다수 수행</li><li>특검 사건 다수 변호 · 노사관계 분쟁 자문</li><li>MBC 100분토론 · TV조선 · 채널A · MBN 출연</li></ul>
+      <a class="pill dark arrow" href="profile.html">약력 전체 보기</a></div>
+  </div></section>
+
+  <section class="g-mq" id="reviews">
+    <div class="wrap g-h reveal"><p>일상을 되찾은 의뢰인들과 함께한</p><h2>{nm} 의뢰인 후기</h2><span>직접 상담하고 진행한 분들의 말 (예시 문구)</span></div>
+    <div class="row"><div class="track">{R1}{R1}{R1}{R1}</div></div>
+    <div class="row rev"><div class="track">{R2}{R2}{R2}{R2}</div></div>
+  </section>
+
+  <section class="g-form" id="form"><img class="bgi" src="img/{BANNER[k]}.webp" alt="" loading="lazy"><div class="wrap"><div class="box reveal">
+    <div class="l"><h2>{nm}<br>상담 접수</h2><p>남겨주신 내용은 대표변호사가<br>직접 확인하고 연락드립니다.</p>
+      <div class="btns"><a href="tel:16447702">전화 상담 <b>1644-7702</b></a><a class="kakao" href="#">카카오톡 상담</a></div></div>
+    <form class="cform" id="cform">
+      <input type="hidden" name="utm_source"><input type="hidden" name="utm_medium"><input type="hidden" name="utm_campaign"><input type="hidden" name="utm_term">
+      <input type="hidden" name="landing_url"><input type="hidden" name="referrer"><input type="hidden" name="area" value="{AREA_OF.get(k, "기타")}">
+      <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+      <div class="two"><div class="row"><label for="f-name">성함</label><input id="f-name" name="name" required maxlength="30"></div>
+        <div class="row"><label for="f-phone">연락처</label><input id="f-phone" name="phone" type="tel" required pattern="[0-9\\-]{{9,13}}" placeholder="010-0000-0000"></div></div>
+      <div class="row"><label for="f-msg">문의 내용</label><textarea id="f-msg" name="message" maxlength="2000" placeholder="[{name}] 사건 개요를 간단히 적어주세요."></textarea></div>
+      <label class="agree"><input type="checkbox" name="agree" required> 개인정보 수집·이용(상담 목적, 1년 보관)에 동의합니다.</label>
+      <button class="pill arrow" type="submit">온라인 상담 문의</button>
+      <p class="msg" role="status"></p>
+    </form>
+  </div></div></section>
+
+  {TOOLS.get(k, "")}
+
+  <section class="g-all" id="all"><div class="wrap"><div class="box reveal">
+    <div class="gl"><h2>모든 분야<small>한눈에 보기</small></h2>{allg}</div>
+    <div class="gr">{allp}</div>
+  </div></div></section>
+
+  <section class="g-trust" id="trust"><img src="img/n/night-office.webp" alt="" loading="lazy"><div class="wrap"><ul>{trust}</ul></div></section>
+
   {sect(P, "sec media")}
 
-  {sect(P, "sec consult")}
+  <section class="g-quick"><div class="wrap">
+    <h2 class="reveal">{name} 사건, 더 궁금한 점이 있으신가요?</h2>
+    <div class="grid">
+      <a class="reveal" href="#form"><b>상담 신청</b><p>전화 1644-7702<br>24시간 상담 접수</p>{arrow}</a>
+      <a class="reveal d1" href="#cases"><b>업무사례</b><p>사건 유형별<br>진행 사례</p>{arrow}</a>
+      <a class="reveal d2" href="#attorney"><b>변호사 소개</b><p>수사와 재판을 직접 맡는<br>대표변호사</p>{arrow}</a>
+      <a class="reveal d3" href="#reviews"><b>의뢰인 후기</b><p>직접 진행한<br>분들의 이야기</p>{arrow}</a>
+    </div>
+  </div></section>
 
   {sect(P, "sec apply loc")}
+{GJS}
 """
     os.makedirs(os.path.join(R, k), exist_ok=True)
     open(os.path.join(R, k, "index.html"), "w", encoding="utf-8").write(to_root(h + body + t))
