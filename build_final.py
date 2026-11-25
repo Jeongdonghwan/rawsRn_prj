@@ -173,7 +173,7 @@ toggle = "const o=this.parentNode.classList.toggle('open');this.setAttribute('ar
 areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">' + NL
          + '      <div class="head reveal"><small>PRACTICE AREAS</small><h2>업무분야</h2><p>기업부터 개인까지, 분야별 사건을 대표변호사가 직접 맡습니다.</p></div>' + NL
          + '      <div class="box"><div class="grid">' + NL
-         + "".join(f'        <div class="ar reveal"><div class="top"><small>{en}</small><h3>{ko}</h3><i>{n:02d}</i><svg viewBox="0 0 24 24"><path d="{ico}"/></svg></div><ul>'
+         + "".join(f'        <div class="ar reveal"><div class="top"><i>{n:02d}</i><div><small>{en}</small><h3>{ko}</h3></div><a class="go" href="{href}">그룹 바로가기<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><ul>'
                    + "".join(f'<li><a href="{href}">{it}<b></b></a></li>' for it in items) + '</ul></div>' + NL
                    for n, (en, ko, href, ico, items) in enumerate(AREAS, 1))
          + f'      </div><button class="more" type="button" aria-expanded="false" onclick="{toggle}"><span>전체 보기</span><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>' + NL
