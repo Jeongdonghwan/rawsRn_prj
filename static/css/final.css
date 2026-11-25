@@ -195,7 +195,7 @@
 .abc:not(.show) { display: none; }
 
 /* 클립아트코리아 수정요청 (2026-11) */
-.final { --beige: #f4efe6; }
+.final, .f-areas { --beige: #f4efe6; }
 /* 업무분야: 세로 더 크게, 분야 이름 눈에 띄게 */
 @media (min-width: 761px) {
   [data-bento=b] .c-bento .card.bg.row { min-height: clamp(520px, 64vh, 820px); }

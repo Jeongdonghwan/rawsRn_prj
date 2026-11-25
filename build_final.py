@@ -152,7 +152,7 @@ assert P.count(a) == 1
 P = P.replace(a, '<div class="t"><small>CORPORATE LAW</small><h3>기업</h3><p>상장기업 법률자문과 M&amp;A, 공정거래, 기업회생까지. 분쟁이 되기 전에 위험을 먼저 읽고, 소송이 되면 대표변호사가 직접 변론합니다.</p></div>')
 a = '<a class="big reveal" href="consult.html">'
 assert P.count(a) == 1
-P = P.replace(a, '<a class="big reveal" href="#areas">')
+P = P.replace(a, '<a class="big reveal" href="practice.html#areas">')
 
 # 업무분야 세부 목록 (벤토 바로 아래). 항목은 의뢰인 레퍼런스 그대로
 AREAS = [
@@ -178,9 +178,6 @@ areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">
                    for n, (en, ko, href, ico, items) in enumerate(AREAS, 1))
          + f'      </div><button class="more" type="button" aria-expanded="false" onclick="{toggle}"><span>전체 보기</span><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>' + NL
          + '    </div>' + NL + '  </section>')
-a = NL + NL + '  <!-- 강점 -->' + NL
-assert P.count(a) == 1
-P = P.replace(a, NL + NL + '  <!-- 업무분야 세부 -->' + NL + areas + a)
 
 # 배너 사진 교체, 방송·미디어 사진 자리에 유튜브
 a = '<img src="img/s-skyline.webp" alt="" loading="lazy">'
@@ -260,6 +257,14 @@ for a, b in [('href="./#apply"', 'href="consult.html"'), ('href="./#attorney">�
 foot = re.sub(r'    <div class="top">.*?\n    </div>\n', "", foot, flags=re.S)
 head = hdr(head)
 for f in ("cases.html", "news.html", "practice.html"): wr(f, hdr(rd(f)))  # 서브페이지 머리도 동일하게
+# 업무분야 페이지: 상단 소개 아래에 분야별 세부 목록 (다시 실행해도 한 번만 들어가게 표시 주석 사이를 교체)
+pr = re.sub(r'<!-- 업무분야 세부 -->.*?<!-- /업무분야 세부 -->' + NL, '', rd("practice.html"), flags=re.S)
+a = '<div class="wrap areas">'
+assert pr.count(a) == 1
+pr = pr.replace(a, '<!-- 업무분야 세부 -->' + NL + areas + NL + '<!-- /업무분야 세부 -->' + NL + a)
+a = '<link rel="stylesheet" href="css/style.css">'
+if 'css/final.css' not in pr: pr = pr.replace(a, a + NL + '<link rel="stylesheet" href="css/final.css">', 1)
+wr("practice.html", pr)
 def sub(name, title, desc, lab, h1, p, body, css="", cta=True):
     h = head.replace('<link rel="stylesheet" href="css/style.css">', '<link rel="stylesheet" href="css/style.css">' + css)
     h = re.sub(r"<title>.*?</title>", f"<title>{title} | 로펌 알엠 법률사무소</title>", h)
