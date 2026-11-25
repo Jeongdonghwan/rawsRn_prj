@@ -152,7 +152,10 @@ assert P.count(a) == 1
 P = P.replace(a, '<div class="t"><small>CORPORATE LAW</small><h3>기업</h3><p>상장기업 법률자문과 M&amp;A, 공정거래, 기업회생까지. 분쟁이 되기 전에 위험을 먼저 읽고, 소송이 되면 대표변호사가 직접 변론합니다.</p></div>')
 a = '<a class="big reveal" href="consult.html">'
 assert P.count(a) == 1
-P = P.replace(a, '<a class="big reveal" href="practice.html#areas">')
+P = P.replace(a, '<a class="big reveal" href="corporate/index.html">')
+for h3, k in [("형사", "criminal"), ("민사", "civil"), ("가사", "family"), ("행정", "admin"), ("노무", "labor")]:  # 벤토 카드 → 센터
+    P, n = re.subn(r'(<a class="card bg [^"]*" href=")[^"]*("><img [^>]*><div class="t"><h3>' + h3 + '</h3>)', lambda m: m.group(1) + k + "/index.html" + m.group(2), P)
+    assert n == 1, h3
 
 # 업무분야 세부 목록 (벤토 바로 아래). 항목은 의뢰인 레퍼런스 그대로
 # 항목 → 상세 페이지 주소 (practice-{slug}.html). 글은 src/fields.json
@@ -164,6 +167,7 @@ SLUG = {"기업일반": "corp-general", "국제법무·중재": "intl-arbitratio
         "헌법·행정·규제개혁": "admin-constitutional", "국제조세·관세": "tax-customs", "학교폭력대응": "school-violence", "외국인소송": "foreigner",
         "노동·산재": "labor-injury", "중대재해": "serious-accident"}
 page = lambda it: f"practice-{SLUG[it]}.html"
+GK = {"기업소송": "corporate", "형사소송": "criminal", "민사소송": "civil", "가사 및 이혼소송": "family", "행정소송": "admin", "노무소송": "labor"}  # 그룹 → 센터 폴더 (추후 별도 도메인)
 AREAS = [
     ("CORPORATE LAW", "기업소송", "practice.html", "M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1",
      ["기업일반", "국제법무·중재", "경영법무컨설팅", "공정거래", "기업회생·파산·M&amp;A", "금융·자본시장", "AI·데이터인텔리전스", "지식재산권", "엔터테인먼트·스포츠", "의료·바이오·헬스케어", "방위산업"]),
@@ -181,8 +185,9 @@ AREAS = [
 toggle = "const o=this.parentNode.classList.toggle('open');this.setAttribute('aria-expanded',o);this.firstChild.textContent=o?'접기':'전체 보기'"
 areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">' + NL
          + '      <div class="head reveal"><small>PRACTICE AREAS</small><h2>업무분야</h2><p>기업부터 개인까지, 분야별 사건을 대표변호사가 직접 맡습니다.</p></div>' + NL
+         + '      <nav class="ctr reveal"><span>센터 바로 이동</span>' + "".join(f'<a href="{GK[ko]}/index.html">{ko.replace("소송", "").replace(" 및 이혼", "·이혼")}센터</a>' for en, ko, href, ico, items in AREAS) + '</nav>' + NL
          + '      <div class="box"><div class="grid">' + NL
-         + "".join(f'        <div class="ar reveal"><div class="top"><i>{n:02d}</i><div><small>{en}</small><h3>{ko}</h3></div><a class="go" href="{page(items[0])}">그룹 바로가기<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><ul>'
+         + "".join(f'        <div class="ar reveal"><div class="top"><i>{n:02d}</i><div><small>{en}</small><h3>{ko}</h3></div><a class="go" href="{GK[ko]}/index.html" aria-label="{ko} 센터로 이동"><span>센터 보기</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><ul>'
                    + "".join(f'<li><a href="{page(it)}">{it}<b></b></a></li>' for it in items) + '</ul></div>' + NL
                    for n, (en, ko, href, ico, items) in enumerate(AREAS, 1))
          + f'      </div><button class="more" type="button" aria-expanded="false" onclick="{toggle}"><span>전체 보기</span><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>' + NL
@@ -265,6 +270,7 @@ for a, b in [('href="./#apply"', 'href="consult.html"'), ('href="./#attorney">�
     head, foot = head.replace(a, b), foot.replace(a, b)
 foot = re.sub(r'    <div class="top">.*?\n    </div>\n', "", foot, flags=re.S)
 head = hdr(head)
+head, foot = head.replace('href="./#practice"', 'href="practice.html"'), foot.replace('href="./#practice"', 'href="practice.html"')
 for f in ("cases.html", "news.html", "practice.html"): wr(f, hdr(rd(f)))  # 서브페이지 머리도 동일하게
 # 업무분야 페이지: 상단 소개 아래에 분야별 세부 목록 (다시 실행해도 한 번만 들어가게 표시 주석 사이를 교체)
 pr = re.sub(r'<!-- 업무분야 세부 -->.*?<!-- /업무분야 세부 -->' + NL, '', rd("practice.html"), flags=re.S)
@@ -339,10 +345,10 @@ def fpage(d):
     faq = "".join(f'<details{" open" if i == 0 else ""}><summary>{amp(q["q"])}</summary><p>{amp(q["a"])}</p></details>' for i, q in enumerate(d["faq"]))
     same = [x for x in slugs if x != d["slug"]]
     rel1 = "".join(f'<a href="practice-{x}.html"><small>{gko}</small>{amp(FBY[x]["item"])}</a>' for x in same)
-    rel2 = "".join(f'<a href="practice-{x[2][0]}.html"><small>{x[0]}</small>{x[1]}</a>' for x in GROUPS if x is not g)
+    rel2 = "".join(f'<a href="{GK[x[1]]}/index.html"><small>{x[0]}</small>{x[1]} 센터</a>' for x in GROUPS if x is not g)
     strs = "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in STR)
     ld = [{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": text(q["q"]), "acceptedAnswer": {"@type": "Answer", "text": text(q["a"])}} for q in d["faq"]]},
-          {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i, "name": n, "item": u} for i, (n, u) in enumerate([("홈", "./"), ("업무분야", "practice.html"), (text(gko), f"practice-{slugs[0]}.html"), (text(d["item"]), f"practice-{d['slug']}.html")], 1)]},
+          {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i, "name": n, "item": u} for i, (n, u) in enumerate([("홈", "./"), ("업무분야", "practice.html"), (text(gko), f"{GK[gko]}/index.html"), (text(d["item"]), f"practice-{d['slug']}.html")], 1)]},
           {"@context": "https://schema.org", "@type": "WebPage", "name": text(d["title"]), "dateModified": UPDATED,
            "about": {"@type": "LegalService", "name": "로펌 알엠 법률사무소", "telephone": "1644-7702", "address": {"@type": "PostalAddress", "streetAddress": "위례광장로 322, 212호", "addressLocality": "성남시 수정구", "addressRegion": "경기도", "addressCountry": "KR"}}}]
     h = head.replace('<link rel="stylesheet" href="css/style.css">', '<link rel="stylesheet" href="css/style.css">\n<link rel="stylesheet" href="css/final.css">')
@@ -354,7 +360,7 @@ def fpage(d):
     main = f"""<main class="field">
 <section class="sub-hero f-hero">
   <div class="wrap">
-    <div class="crumb">⌂ &nbsp;›&nbsp; <a href="practice.html">업무분야</a> &nbsp;›&nbsp; <a href="practice-{slugs[0]}.html">{gko}</a> &nbsp;›&nbsp; <b>{amp(d["item"])}</b></div>
+    <div class="crumb">⌂ &nbsp;›&nbsp; <a href="practice.html">업무분야</a> &nbsp;›&nbsp; <a href="{GK[gko]}/index.html">{gko}</a> &nbsp;›&nbsp; <b>{amp(d["item"])}</b></div>
     <p class="cat">{en} · {gko}</p>
     <h1><span>{kw}</span> <span class="hero-sub">{sub_}</span></h1>
     <p class="lead">{amp(d["lead"])}</p>
@@ -403,4 +409,134 @@ def fpage(d):
 
 for d in FIELDS: fpage(d)
 print("built practice-*.html", len(FIELDS))
+
+
+# ---- 그룹 센터 미니사이트 6개: src/groups.json → static/{key}/index.html ----
+# 나중에 그룹별 별도 도메인·서브도메인으로 뗄 예정 → 폴더 하나에 독립 페이지(자체 상단 메뉴·히어로·사례·후기·상담).
+# 지금은 시안: 링크는 ../ 로 본 사이트 자원을 쓰고, 떼어낼 때 ../ 만 도메인 주소로 바꾸면 된다. 사례·후기는 예시(화면에 표시).
+GKEY = ["corporate", "criminal", "civil", "family", "admin", "labor"]  # AREAS 순서와 같게
+GIMG = {"corporate": "img/s-hall.webp", "criminal": "img/n/criminal.webp", "civil": "img/n/justice-statue.webp",
+        "family": "img/s-family.webp", "admin": "img/n/city-dusk.webp", "labor": "img/n/labor-shake.webp"}
+GROUPS_D = {d["key"]: d for d in json.load(open(os.path.join(R, "..", "src", "groups.json"), encoding="utf-8"))}
+assert list(GROUPS_D) == GKEY, list(GROUPS_D)
+GOF = {g[1]: k for g, k in zip(GROUPS, GKEY)}  # 그룹 한글명 → key
+EXTRA = {"corporate": ["white-collar"]}  # 기업센터에서 같이 보여줄 다른 그룹 항목
+
+def to_root(html_, up="../"):  # 본 사이트 기준 상대경로 → 한 단계 위
+    return re.sub(r'(href|src)="(?!https?:|tel:|mailto:|#|\.\./|data:)([^"]*)"', lambda m: f'{m.group(1)}="{up}{m.group(2) or "./"}"', html_)
+
+TOOLS = {
+"family": """<section class="g-tool" id="tool"><div class="wrap"><div class="g-sh"><small>TOOL</small><h2>법정상속분 계산기</h2><p>가족 관계를 넣으면 민법이 정한 상속 순위와 법정상속분을 계산합니다. 유언·기여분·특별수익·대습상속은 반영하지 않은 참고용입니다.</p></div>
+<form class="calc" id="inh" onsubmit="return false"><label>배우자<select name="sp"><option value="1">있음</option><option value="0">없음</option></select></label><label>자녀 수<input name="ch" type="number" min="0" max="10" value="2"></label><label>부모(생존) 수<input name="pa" type="number" min="0" max="2" value="0"></label><label>형제자매 수<input name="sb" type="number" min="0" max="10" value="0"></label></form>
+<div class="out" id="inh-out"></div></div></section>
+<script>(()=>{const f=document.getElementById('inh'),o=document.getElementById('inh-out');const g=(a,b)=>b?g(b,a%b):a;
+const run=()=>{const sp=+f.sp.value,ch=+f.ch.value||0,pa=+f.pa.value||0,sb=+f.sb.value||0;let r=[],k;
+if(ch)k=['자녀',ch];else if(pa)k=['부모',pa];else if(!sp&&sb)k=['형제자매',sb];
+if(k){const sh=sp&&k[0]!=='형제자매'?3:0,tot=k[1]*2+sh;if(sh)r.push(['배우자',3,tot]);for(let i=1;i<=k[1];i++)r.push([k[0]+(k[1]>1?' '+i:''),2,tot]);}else if(sp)r.push(['배우자',1,1]);
+const lab=k?(k[0]==='형제자매'?3:k[0]==='부모'?2:1)+'순위 상속':'배우자 단독 상속';
+o.innerHTML=r.length?'<b>'+lab+'</b>'+r.map(([n,a,b])=>{const d=g(a,b);return'<p><span>'+n+'</span><i style="--w:'+(a/b*100)+'%"></i><em>'+a/d+'/'+b/d+' ('+(a/b*100).toFixed(1)+'%)</em></p>'}).join(''):'<p>입력한 상속인이 없습니다. 4촌 이내 방계혈족 여부를 상담으로 확인하세요.</p>';};
+f.oninput=run;run();})();</script>""",
+"admin": """<section class="g-tool" id="tool"><div class="wrap"><div class="g-sh"><small>TOOL</small><h2>불복 기한 계산기</h2><p>처분이 있음을 안 날을 넣으면 행정심판·행정소송 마감일을 계산합니다. 마지막 날이 토요일·공휴일이면 그다음 날까지이며, 개별 법률에 다른 기한이 있으면 그 기한이 먼저입니다.</p></div>
+<form class="calc" id="dl" onsubmit="return false"><label>처분이 있음을 안 날<input name="d" type="date"></label></form>
+<div class="out" id="dl-out"></div></div></section>
+<script>(()=>{const f=document.getElementById('dl'),o=document.getElementById('dl-out');const t=new Date();f.d.value=t.toISOString().slice(0,10);
+const run=()=>{if(!f.d.value)return;const d=new Date(f.d.value+'T00:00:00'),e=new Date(d);e.setDate(e.getDate()+90);const left=Math.ceil((e-new Date(new Date().toDateString()))/864e5);
+const fmt=x=>x.getFullYear()+'. '+(x.getMonth()+1)+'. '+x.getDate()+'.';o.innerHTML='<b>마감일 '+fmt(e)+'</b><p><span>행정심판 청구</span><em>안 날부터 90일 → '+fmt(e)+'</em></p><p><span>행정소송 제기</span><em>안 날부터 90일 → '+fmt(e)+'</em></p><p class="'+(left<0?'over':'')+'"><span>남은 기간</span><em>'+(left<0?'기한이 지났습니다. 다른 다툼 방법을 상담으로 확인하세요.':left+'일')+'</em></p>';};
+f.oninput=run;run();})();</script>""",
+"civil": """<section class="g-tool" id="tool"><div class="wrap"><div class="g-sh"><small>CHECK</small><h2>소멸시효 한눈에 보기</h2><p>시효가 지나면 받을 돈이 있어도 청구할 수 없습니다. 대표적인 기간이며, 시효는 소송·가압류·승인 등으로 중단될 수 있습니다.</p></div>
+<table class="tbl"><thead><tr><th>채권</th><th>기간</th><th>근거</th></tr></thead><tbody>
+<tr><td>일반 민사채권 (대여금 등)</td><td>10년</td><td>민법 제162조</td></tr><tr><td>상행위로 생긴 채권</td><td>5년</td><td>상법 제64조</td></tr>
+<tr><td>공사대금·의료비 등</td><td>3년</td><td>민법 제163조</td></tr><tr><td>숙박료·음식료 등</td><td>1년</td><td>민법 제164조</td></tr>
+<tr><td>불법행위 손해배상</td><td>안 날부터 3년, 있은 날부터 10년</td><td>민법 제766조</td></tr><tr><td>판결로 확정된 채권</td><td>10년</td><td>민법 제165조</td></tr>
+</tbody></table></div></section>""",
+}
+
+def gpage(k):
+    d = GROUPS_D[k]; gi = GKEY.index(k); en, gko, slugs = GROUPS[gi]
+    items = slugs + EXTRA.get(k, [])
+    tabs = "".join(f'<a href="../{x}/index.html"{" class=on" if x == k else ""}>{GROUPS_D[x]["name"]}</a>' for x in GKEY)
+    areas = "".join(f'<a class="ga reveal" href="practice-{x}.html"><i>{i:02d}</i><b>{amp(FBY[x]["item"])}</b><span>{amp(FBY[x]["h1sub"])}</span></a>' for i, x in enumerate(items, 1))
+    steps = "".join(f'<li class="reveal"><i>{i}</i><b>{amp(x["t"])}</b><p>{amp(x["p"])}</p></li>' for i, x in enumerate(d["steps"]["items"], 1))
+    ask = "".join(f'<details class="reveal"><summary>{amp(x["q"])}</summary><p>{amp(x["a"])}</p></details>' for x in d["ask"]["items"])
+    tags = list(dict.fromkeys(c["tag"] for c in d["cases"]))
+    ctabs = '<button type="button" class="on" data-t="">전체</button>' + "".join(f'<button type="button" data-t="{amp(t)}">{amp(t)}</button>' for t in tags)
+    cases = "".join(f'<article class="gc reveal" data-t="{amp(c["tag"])}"><div><span>{amp(c["tag"])}</span><em>{amp(c["result"])}</em></div><h3>{amp(c["title"])}</h3><p>{amp(c["summary"])}</p></article>' for c in d["cases"])
+    revs = "".join(f'<article class="gr reveal"><div class="st">★★★★★</div><small>{amp(r["tag"])}</small><h3>{amp(r["title"])}</h3><p>{amp(r["text"])}</p><b>{amp(r["name"])}</b></article>' for r in d["reviews"])
+    faq = "".join(f'<details{" open" if i == 0 else ""}><summary>{amp(q["q"])}</summary><p>{amp(q["a"])}</p></details>' for i, q in enumerate(d["faq"]))
+    strs = "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in [("대표변호사 직접 수행", "상담부터 서면 작성, 법정 출석까지 사무장이 아닌 대표변호사가 맡습니다."),
+                                                                     ("비용·범위 서면 안내", "수임 전에 예상 비용과 업무 범위를 글로 먼저 안내합니다."),
+                                                                     ("단계마다 바로 보고", "기일과 서면 제출 같은 주요 단계를 의뢰인께 바로 알려드립니다.")])
+    ld = [{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": text(q["q"]), "acceptedAnswer": {"@type": "Answer", "text": text(q["a"])}} for q in d["faq"]]},
+          {"@context": "https://schema.org", "@type": "LegalService", "name": "로펌 알엠 법률사무소 " + text(d["center"]), "telephone": "1644-7702",
+           "address": {"@type": "PostalAddress", "streetAddress": "위례광장로 322, 212호", "addressLocality": "성남시 수정구", "addressRegion": "경기도", "addressCountry": "KR"}}]
+    h = head[:head.index("</head>")]
+    h = re.sub(r"<title>.*?</title>", lambda m: f"<title>{amp(d['title'])}</title>", h)
+    h = re.sub(r'<meta name="description" content="[^"]*">', lambda m: f'<meta name="description" content="{amp(d["desc"])}">', h)
+    h = h.replace('<link rel="stylesheet" href="css/style.css">', '<link rel="stylesheet" href="css/style.css">\n<link rel="stylesheet" href="css/final.css">')
+    h += "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in ld) + "</head>\n"
+    body = f"""<body class="sub center-page">
+<header class="gnb g-gnb">
+  <div class="wrap">
+    <a href="#top" class="logo"><span class="ko">로펌 알엠 <em>{amp(d["center"]).replace("알엠 ", "")}</em><small>{d["en"]}</small></span></a>
+    <nav class="menu"><a href="#about">센터 소개</a><a href="#areas">업무분야</a><a href="#cases">업무사례</a><a href="#reviews">의뢰인 후기</a><a href="#book">상담 문의</a></nav>
+    <div class="hright"><a class="home" href="./">본 사이트</a><a class="call" href="tel:16447702">1644-7702</a></div>
+  </div>
+</header>
+<main id="top">
+<section class="g-hero"><img src="{GIMG[k]}" alt="">
+  <div class="wrap"><span class="badge">24시간 상담 접수</span><p class="eb">{amp(d["hero"]["eyebrow"])}</p><h1>{amp(d["hero"]["h1"])}</h1><p class="sub">{amp(d["hero"]["sub"])}</p>
+    <div class="btns"><a class="pill glow" href="tel:16447702">전화 상담 1644-7702</a><a class="pill" href="consult.html">온라인 상담 신청</a></div></div>
+</section>
+<nav class="g-tabs"><div class="wrap"><span>센터 바로 이동</span>{tabs}</div></nav>
+
+<section class="g-about" id="about"><div class="wrap">
+  <div class="g-sh reveal"><small>ABOUT</small><h2>{amp(d["intro"]["h2"])}</h2><p>{amp(d["intro"]["p"])}</p></div>
+  <div class="me reveal"><span class="mk">R<i>M</i></span><div><b>대표변호사 변환봉</b><ul><li>사법시험 합격 · 사법연수원 수료</li><li>前 서울지방변호사회 사무총장</li><li>상장기업 법률자문·M&amp;A 다수 수행</li><li>특검 사건 다수 변호 · 노사관계 분쟁 자문</li></ul><a href="profile.html">약력 전체 보기</a></div></div>
+</div></section>
+
+<section class="g-areas" id="areas"><div class="wrap">
+  <div class="g-sh reveal"><small>PRACTICE</small><h2>{amp(d["name"])} 업무분야</h2></div>
+  <div class="grid">{areas}</div>
+</div></section>
+
+<section class="g-steps"><div class="wrap">
+  <div class="g-sh reveal"><small>PROCESS</small><h2>{amp(d["steps"]["h2"])}</h2></div>
+  <ol>{steps}</ol>
+</div></section>
+
+{TOOLS.get(k, "")}
+
+<section class="g-ask"><div class="wrap">
+  <div class="g-sh reveal"><small>BEFORE CONSULTING</small><h2>{amp(d["ask"]["h2"])}</h2></div>
+  <div class="grid">{ask}</div>
+</div></section>
+
+<section class="g-cases" id="cases"><div class="wrap">
+  <div class="g-sh reveal"><small>CASES</small><h2>{amp(d["name"])} 업무사례 <span class="ex">예시</span></h2></div>
+  <div class="ctabs">{ctabs}</div>
+  <div class="grid">{cases}</div>
+</div></section>
+<script>(()=>{{const w=document.currentScript.previousElementSibling;w.querySelectorAll('.ctabs button').forEach(b=>b.onclick=()=>{{w.querySelectorAll('.ctabs button').forEach(x=>x.classList.toggle('on',x===b));w.querySelectorAll('.gc').forEach(c=>c.hidden=!!b.dataset.t&&c.dataset.t!==b.dataset.t);}});}})();</script>
+
+<section class="g-rev" id="reviews"><div class="wrap">
+  <div class="g-sh reveal"><small>REVIEWS</small><h2>의뢰인 후기 <span class="ex">예시</span></h2></div>
+  <div class="grid">{revs}</div>
+</div></section>
+
+<section class="f-str"><div class="wrap"><h2>로펌 알엠의 3가지 약속</h2><ul>{strs}</ul></div></section>
+
+<section class="g-faq"><div class="wrap f-main"><h2>{amp(d["name"])} 자주 묻는 질문</h2>{faq}</div></section>
+
+<section class="f-book" id="book"><div class="wrap">
+  <h2>{amp(d["center"])} 상담 문의</h2><p>전화는 24시간 접수합니다. 남겨주신 사건 개요는 대표변호사가 직접 확인하고 연락드립니다.</p>
+  <div class="btns"><a href="tel:16447702">{svg("tel")}<b>전화 상담</b><small>1644-7702</small></a><a href="consult.html">{svg("form")}<b>온라인 상담</b><small>사건 개요 남기기</small></a><a class="kakao" href="#">{svg("talk")}<b>카카오톡 상담</b><small>채널로 간편 문의</small></a></div>
+</div></section>
+</main>
+
+"""
+    os.makedirs(os.path.join(R, k), exist_ok=True)
+    open(os.path.join(R, k, "index.html"), "w", encoding="utf-8").write(to_root(quick(h + body + foot)))  # 플로팅까지 넣은 뒤 경로 변환
+
+for k in GKEY: gpage(k)
+print("built center pages", len(GKEY))
 
