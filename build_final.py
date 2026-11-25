@@ -191,7 +191,39 @@ areas = ('  <section class="f-areas" id="areas">' + NL + '    <div class="wrap">
                    + "".join(f'<li><a href="{page(it)}">{it}<b></b></a></li>' for it in items) + '</ul></div>' + NL
                    for n, (en, ko, href, ico, items) in enumerate(AREAS, 1))
          + f'      </div><button class="more" type="button" aria-expanded="false" onclick="{toggle}"><span>전체 보기</span><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button></div>' + NL
+         + '      PCARDS' + NL
          + '    </div>' + NL + '  </section>')
+# 업무분야 사진 카드 시안 (의뢰인 참고 파일 마지막.html = A, fullscreen.html = B). 제목 → 센터, 세부 항목 → 상세 페이지
+GIMG = {"corporate": "img/s-hall.webp", "criminal": "img/n/criminal.webp", "civil": "img/n/justice-statue.webp",
+        "family": "img/s-family.webp", "admin": "img/n/city-dusk.webp", "labor": "img/n/labor-shake.webp"}
+PDESC = {"corporate": "상장기업 법률자문과 M&amp;A, 공정거래, 기업회생까지. 분쟁이 되기 전에 위험을 먼저 읽습니다.",
+         "criminal": "경찰 조사 동석부터 영장심사, 공판까지. 특검 사건을 다수 변호한 대표변호사가 직접 맡습니다.",
+         "civil": "계약·손해배상·건설·부동산 분쟁. 소송 전 증거 정리부터 판결 뒤 회수까지 설계합니다.",
+         "family": "이혼·재산분할·양육권·상속. 의뢰인과 자녀의 내일을 먼저 생각합니다.",
+         "admin": "영업정지·면허취소 같은 처분에 대한 행정심판과 행정소송. 조세·학교폭력·외국인 사건까지.",
+         "labor": "부당해고·임금체불·산재·중대재해. 노사관계 분쟁 자문 경험으로 근로자와 사업주 양쪽을 압니다."}
+def pcard(en, ko, items, b):
+    k, nm = GK[ko], ko.replace("소송", "").replace(" 및 이혼", "·이혼")
+    subs = '<ul class="subs">' + "".join(f'<li><a href="{page(it)}">{it}</a></li>' for it in items) + '</ul>'
+    t = f'<small>{en}</small><h3><a href="{k}/index.html" title="{nm} 센터로 이동">{nm}<span class="to">센터 사이트 →</span></a></h3><p>{PDESC[k]}</p>'
+    return (f'<article class="pc" tabindex="0" style="background-image:url({GIMG[k]})"><div class="tx">{t}'
+            + (f'</div>{subs}' if b else f'<div class="sw"><div class="si">{subs}</div></div></div>') + '</article>')
+PB_JS = """(()=>{const g=document.querySelector('.pg.pb');let t,cur;
+const px=c=>({top:c.offsetTop+'px',left:c.offsetLeft+'px',width:c.offsetWidth+'px',height:c.offsetHeight+'px'});
+const close=()=>{if(!cur)return;const o=cur,c=o.card;cur=null;o.classList.remove('on');c.dataset.lock=1;Object.assign(o.style,px(c));setTimeout(()=>{o.remove();if(!c.matches(':hover'))delete c.dataset.lock},600)};
+const open=c=>{if(cur||c.dataset.lock)return;const o=document.createElement('div');o.className='fs';Object.assign(o.style,px(c));o.style.backgroundImage='linear-gradient(rgba(13,22,40,.55),rgba(13,22,40,.88)),'+c.style.backgroundImage;
+o.innerHTML='<button class="x" type="button" aria-label="닫기">×</button><div class="fsin">'+c.querySelector('.tx').innerHTML+c.querySelector('.subs').outerHTML+'</div>';
+g.append(o);o.offsetHeight;o.classList.add('on');Object.assign(o.style,{top:0,left:0,width:'100%',height:'100%'});o.querySelector('.x').onclick=close;o.onmouseleave=close;o.card=c;cur=o};
+g.querySelectorAll('.pc').forEach(c=>{c.onmouseenter=()=>{if(c.dataset.lock)return;clearTimeout(t);t=setTimeout(()=>open(c),280)};c.onmouseleave=()=>{clearTimeout(t);if(!cur)delete c.dataset.lock};
+c.onclick=e=>{if(!e.target.closest('a')){clearTimeout(t);open(c)}};c.onkeydown=e=>{if(e.key==='Enter'&&e.target===c)open(c)}});
+addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+const s=document.getElementById('areas'),pick=v=>{s.dataset.v=v;s.querySelectorAll('.vsw button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))};
+s.querySelectorAll('.vsw button').forEach(b=>b.onclick=()=>pick(b.dataset.v));pick(new URLSearchParams(location.search).get('pa')||'a')})();"""
+areas = areas.replace('<section class="f-areas" id="areas">', '<section class="f-areas" id="areas" data-v="a">').replace(
+    '<div class="box">', '<div class="vsw"><span>업무분야 시안</span><button type="button" data-v="a">A 올라오는 목록</button><button type="button" data-v="b">B 화면 확장</button><button type="button" data-v="c">기존 목록</button></div>' + NL + '      <div class="box">').replace(
+    'PCARDS', '<div class="pg pa reveal">' + "".join(pcard(en, ko, items, 0) for en, ko, href, ico, items in AREAS) + '</div>' + NL
+    + '      <div class="pg pb reveal">' + "".join(pcard(en, ko, items, 1) for en, ko, href, ico, items in AREAS) + '</div>' + NL
+    + f'      <script>{PB_JS}</script>')
 
 # 배너 사진 교체, 방송·미디어 사진 자리에 유튜브
 a = '<img src="img/s-skyline.webp" alt="" loading="lazy">'
@@ -415,8 +447,6 @@ print("built practice-*.html", len(FIELDS))
 # 나중에 그룹별 별도 도메인·서브도메인으로 뗄 예정 → 폴더 하나에 독립 페이지(자체 상단 메뉴·히어로·사례·후기·상담).
 # 지금은 시안: 링크는 ../ 로 본 사이트 자원을 쓰고, 떼어낼 때 ../ 만 도메인 주소로 바꾸면 된다. 사례·후기는 예시(화면에 표시).
 GKEY = ["corporate", "criminal", "civil", "family", "admin", "labor"]  # AREAS 순서와 같게
-GIMG = {"corporate": "img/s-hall.webp", "criminal": "img/n/criminal.webp", "civil": "img/n/justice-statue.webp",
-        "family": "img/s-family.webp", "admin": "img/n/city-dusk.webp", "labor": "img/n/labor-shake.webp"}
 GROUPS_D = {d["key"]: d for d in json.load(open(os.path.join(R, "..", "src", "groups.json"), encoding="utf-8"))}
 assert list(GROUPS_D) == GKEY, list(GROUPS_D)
 GOF = {g[1]: k for g, k in zip(GROUPS, GKEY)}  # 그룹 한글명 → key
